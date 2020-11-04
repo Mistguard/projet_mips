@@ -9,4 +9,4 @@ main.o : main.c hexaConv.h
 	gcc -o main.o -Wall -ansi -pedantic -c main.c
 
 hexaConv.o : hexaConv.c hexaConv.h
-	gcc -c hexaConv.c -Wall -ansi -pedantic -o hexaConv.o
+	gcc -c hexaConv.c -Wall -ansi -pedantic --std=c11 -o hexaConv.o

@@ -29,5 +29,5 @@
 #define SYSCALL = 0XC
 #define XOR = 0X26
 
-
 void lireEnreDonnees(char nomFichier1[],char nomFichier2[]);
+
