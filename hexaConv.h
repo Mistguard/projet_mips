@@ -1,4 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
-int lireEnreDonnees(char nomFichier1[],char nomFichier2[]);
+void lireEnreDonnees(char nomFichier1[],char nomFichier2[]);
