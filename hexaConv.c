@@ -40,3 +40,4 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	fclose(fic1);
 	fclose(fic2);
 }
+
