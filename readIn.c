@@ -1,25 +1,25 @@
 #include "readIn.h"
 #include "hexaConv.h"
 
-void inJtoHex(char in[], int hexa)
+void inJtoHex(char inst[], int hexa)
 {
-	int l = strlen(in);
+	int l = strlen(inst);
 
-	if(strstr(in,"JAL")){
+	if(strstr(inst,"JAL")){
 		hex = JAL << 26;
-		hex += atoi(strchr(in,' ')+1);
-	}else if(strstr(in, "J ")){
+		hex += atoi(strchr(inst,' ')+1);
+	}else if(strstr(inst, "J ")){
 		hex = J << 26;
-		hex += atoi(strchr(in,' ')+1);
+		hex += atoi(strchr(inst,' ')+1);
 	}
 }
 
-void inItoHex(char in[], int hexa)
+void inItoHex(char inst[], int hexa)
 {
 	
 }
 
-void inRtoHex(char in[], int hexa)
+void inRtoHex(char inst[], int hexa)
 {
 
 }
