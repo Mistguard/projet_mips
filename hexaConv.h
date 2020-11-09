@@ -1,8 +1,6 @@
 #ifndef HEXA_CONV_H
 #define HEXA_CONV_H
 
-
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

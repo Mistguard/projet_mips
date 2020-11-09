@@ -17,20 +17,18 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 
 	int hexTrad;
 
-	/* Ouverture du fichier */
+	/* Ouverture des fichiers */
 	fic1 = fopen(nomFichier1, "r");
 	if(fic1 == NULL) {
 		perror("Probleme ouverture fichier monFichier.txt");
 		exit(1);
 	}
-
 	fic2 = fopen(nomFichier2, "w");
-	/* Lecture dans le fichier */
+
 	/* On parcourt les lignes du fichier */
 	while(fgets(line, 30, fic1)){
 		hexTrad = 0;
-		rd = 0; rs = 0; rt = 0; imm = 0; target = 0; sa = 0;
-		r1=0;r2=0;r3=0;value=0;
+		rd = 0; rs = 0; rt = 0; imm = 0; target = 0; sa = 0; r1=0; r2=0; r3=0; value=0;
 		word = line;
 		prevWord = word;
 		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
@@ -39,21 +37,14 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			wLgth++;
 			/*Si on arrive à la fin d'un mot */
 			if(word[0]==' ' || word[0]==',' || word[0]=='\n' || word[0]=='#' || word[0]=='\0'){
-				printf("word length = %d\n",wLgth);
-				/*ton strcpy ne tronc pas la chaine donc whatisword ne fonctionne pas et je pense que meme si ca tronque 
-				whatisword ne va pas faire ce qu'on veut*/
+				/* On fait une copie du mot */
 				char* tmpWord = (char *)malloc(wLgth * sizeof(char));
 				for(int j = 0; j < wLgth; j++){
 					tmpWord[j] = prevWord[j];
 				}
 				tmpWord[wLgth]='\0';
-				
-				printf("prevWord = %s\n",prevWord);
-				printf("tmpWord = %s\n",tmpWord);
 				/* Et on regarde ce que c'est */
 				whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
-				printf("oppcode :%s\n",oppcode);
-				printf("on a r1 = %d  r2 = %d  r3 = %d  et val = %d\n",r1,r2,r3,value);
 				/* On incrémente "l'index" du mot */
 				i++;
 				wLgth=0;
@@ -66,30 +57,26 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&sa,&target);
 		/* On identifie le type d'instruction */
 		instrType = idInstrType(oppcode);
-		switch(instrType)
-		{
-		case 0:
-			printf("ca fait rien\n");
-		case 1:
-			hexTrad = typeRToHex(oppcode, rs, rt, rd, sa);
-			break;
-		case 2:
-			hexTrad = typeIToHex(oppcode, rs, rt, imm);
-			break;
-		case 3:
-			hexTrad = typeJToHex(oppcode, target);
-			break;
-		default:
-			printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
-			break;
+		/* On traduit l'instruction en héxadécimal */
+		switch(instrType){
+			case 1:
+				hexTrad = typeRToHex(oppcode, rs, rt, rd, sa);
+				break;
+			case 2:
+				hexTrad = typeIToHex(oppcode, rs, rt, imm);
+				break;
+			case 3:
+				hexTrad = typeJToHex(oppcode, target);
+				break;
+			default:
+				printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
+				break;
 		}
-		printf("On a rs = %d, rt = %d, rd = %d, sa = %d, imm = %d, target = %d\n",rs,rt,rd,sa,imm,target);
-		printf("On a l'hexa qui vaut %X\n",hexTrad);
+		/* On écrit dans le fichier destination l'héxadécimal de l'instruction */
 		fprintf(fic2, "%08x\n",hexTrad);
-		printf("########## NEXT LINE #####\n\n");
 	}
 
-	/* Fermeture du fichier */
+	/* Fermeture des fichiers */
 	fclose(fic1);
 	fclose(fic2);
 }
@@ -110,30 +97,27 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
    //Baby don't 
    //Hurt me
 	if(i==0){
+		/* Si c'est le premier mot c'est l'opcode */
 		strcpy(oppcode,mot);
-		printf("on a mot = %s\n",mot);
 	}else{
-		printf("on a mot = %s\n",mot);
+		/* Si il y a un dollard c'est un registre */
 		if(mot[0]=='$'){
-			printf("on va mettre dans r%d <- %s\n",*rNb+1, mot+1);
 			switch(*rNb)
 			{
 				case 0:
 					*r1 = atoi(mot+1);
-					printf("on a r1 = %d\n",*r1);
 					break;
 				case 1:
 					*r2 = atoi(mot+1);
-					printf("on a r2 = %d\n",*r2);
 					break;
 				case 2:
 					*r3 = atoi(mot+1);
-					printf("on a r3 = %d\n",*r3);
 					break;
 				default:
 					break;
 			}
 			(*rNb)++;
+		/* sinon c'est une valeur immédiate */
 		}else{
 				*imm = atoi(mot);
 		}
@@ -143,45 +127,51 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 	}
 }
 
+/*
+	Cette fonction va identifier les registres en fonction des instructions ainsi que les valeurs immédiates
+	Paramètre :
+		- oppcode : char[]	char contenant l'oppcode
+		- r1 : int			entier contenant le premier registre trouvé
+		- r2 : int			entier contenant le deuxième registre trouvé
+		- r3 : int			entier contenant le troisième registre trouvé
+		- value : int		entier contenant la valeur immédiate trouvé
+		- rd : int*			entier dans lequel on mettra le registre rd
+		- rs : int*			entier dans lequel on mettra le registre trouvé
+		- rt : int*			entier dans lequel on mettra le registre trouvé
+		- imm : int*		entier dans lequel on mettra la valeur immédiate
+		- sa : int*			entier dans lequel on mettra la valeur sa
+		- target : int*		entier dans lequel on mettra la valeur de target
+*/
 void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* sa, int* target)
 {
 	if((strcmp(oppcode,"ADD")==0) || strcmp(oppcode,"AND")==0 || strcmp(oppcode,"OR")==0 || strcmp(oppcode,"SLT")==0 || strcmp(oppcode,"SUB")==0 || strcmp(oppcode,"XOR")==0){
 		*rd = r1;
 		*rs = r2;
 		*rt = r3;
-	}else if (strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0 )
-	{
+	}else if (strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0 ){
 		*rt = r1;
 		*imm = value;
-	}else if (strcmp(oppcode,"ROTR")==0 || strcmp(oppcode,"SLL")==0 || strcmp(oppcode,"SRL")==0)
-	{
+	}else if (strcmp(oppcode,"ROTR")==0 || strcmp(oppcode,"SLL")==0 || strcmp(oppcode,"SRL")==0){
 		*rd = r1;
 		*rt = r2;
 		*sa = value;
-	}else if (strcmp(oppcode,"DIV")==0 || strcmp(oppcode,"MUL")==0)
-	{
+	}else if (strcmp(oppcode,"DIV")==0 || strcmp(oppcode,"MULT")==0){
 		*rs = r1;
 		*rt = r2;
-	}else if (strcmp(oppcode,"MFHI")==0 || strcmp(oppcode,"MFLO")==0)
-	{
+	}else if (strcmp(oppcode,"MFHI")==0 || strcmp(oppcode,"MFLO")==0){
 		*rd = r1;
-	}else if (strcmp(oppcode,"LUI")==0)
-	{
+	}else if (strcmp(oppcode,"LUI")==0){
 		*rt = r1;
 		*imm = value;
-	}else if (strcmp(oppcode,"JR")==0)
-	{
+	}else if (strcmp(oppcode,"JR")==0){
 		*rs = r1;
-	}else if (strcmp(oppcode,"J")==0 || strcmp(oppcode,"JAL")==0)
-	{
+	}else if (strcmp(oppcode,"J")==0 || strcmp(oppcode,"JAL")==0){
 		*target = value;
-	}else if (strcmp(oppcode,"BEQ")==0 || strcmp(oppcode,"BNE")==0 )
-	{
+	}else if (strcmp(oppcode,"BEQ")==0 || strcmp(oppcode,"BNE")==0 ){
 		*rs = r1;
 		*rt = r2;
 		*imm = value;
-	}else if (strcmp(oppcode,"BGTZ")==0 || strcmp(oppcode,"BLEZ")==0)
-	{
+	}else if (strcmp(oppcode,"BGTZ")==0 || strcmp(oppcode,"BLEZ")==0){
 		*rs = r1;
 		*imm = value;
 	}else if(strcmp(oppcode,"ADDI")==0){
@@ -194,10 +184,20 @@ void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd
 		*rt = 0;
 		*sa = 0; 	
 	}else{
-		printf("fonction non trouvé\n");
+		printf("Fonction non trouvé\n");
 	}
 }
 
+/*
+	Cette fonction va identifier le type d'instruction compris dans la chaine de caractères oppcode.
+	Paramètre :
+		- oppcode : char[]	char contenant l'oppcode dont on identifiera le type
+	Retourne un entier :
+		- 1 : si l'instruction est de type R
+		- 2 : si l'instruction est de type I
+		- 3 : si l'instruction est de type J
+		- -1 : si l'instruction est de type inconnue
+*/
 int idInstrType(char oppcode[])
 {
 	if((strcmp(oppcode,"ADD")==0) ||(strcmp(oppcode,"AND")==0) ||(strcmp(oppcode,"DIV")==0) ||(strcmp(oppcode,"MFHI")==0) 
@@ -206,15 +206,11 @@ int idInstrType(char oppcode[])
 	||(strcmp(oppcode,"SUB")==0) ||(strcmp(oppcode,"XOR")==0) ||(strcmp(oppcode,"JR")==0)){
 		return 1;
 	}else if ((strcmp(oppcode,"ADDI")==0) ||(strcmp(oppcode,"BEQ")==0) ||(strcmp(oppcode,"BGTZ")==0) ||(strcmp(oppcode,"BLEZ")==0) ||
-	(strcmp(oppcode,"BNE")==0) ||(strcmp(oppcode,"LUI")==0) ||(strcmp(oppcode,"LW")==0) ||(strcmp(oppcode,"SW")==0))
-	{
+	(strcmp(oppcode,"BNE")==0) ||(strcmp(oppcode,"LUI")==0) ||(strcmp(oppcode,"LW")==0) ||(strcmp(oppcode,"SW")==0)){
 		return 2;
-	}
-	else if ((strcmp(oppcode,"J")==0) || (strcmp(oppcode,"JAL")==0))
-	{
+	}else if ((strcmp(oppcode,"J")==0) || (strcmp(oppcode,"JAL")==0)){
 		return 3;
-	}else
-	{
+	}else{
 		return -1;
 	}
 }
