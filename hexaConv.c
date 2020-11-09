@@ -36,19 +36,25 @@ int typeJToHex(char opcode[], int target)
 
 int opcodeToHexa(char opcode[])
 {
-	int i=0;
-	while (strcmp(opcode,T[i].name)!=0 && i<TAILLEMAX){
-		i++;
-	}
-	if(strcmp(opcode,T[i].name)==0){
-		i=T[i].hexa;
-	}else{
-		i=-1;
-	}
-	return i;
+	int k;
+	/*Je rentre dans dichotomie avec le mot, la valeur de début ici 26 et de fin ici 0, et j'y rentre n qui represente le nombre de tour max nécessaire si on ne trouve pas le mot*/
+	k = dichotomie(opcode,TAILLEMAX,0,4);
+	return k;
 }
 
-
+int dichotomie(char opcode[], int debut,int fin,int n){
+	if (n!=0){
+		if (strcmp(opcode,T[(debut-fin)/2])==0){
+			return(debut-fin)/2;
+		}else if (strcmp(opcode,T[(debut-fin)/2])<0){
+			dichotomie(opcode,(debut-fin)/2,fin,n-1);
+		}else{
+			dichotomie(opcode,debut,(debut-fin)/2,n-1);
+		}
+	}else{
+		return -1;
+	}
+}
 
 /*
 void inAtoType(char inst[], int hexa)

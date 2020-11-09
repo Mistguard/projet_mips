@@ -50,6 +50,7 @@ int typeRToHex(char opcode[], int rs, int rt, int rd, int sa);
 int typeIToHex(char opcode[], int rs, int rt, int imm);
 int typeJToHex(char opcode[], int target);
 int opcodeToHexa(char opcode[]);
+int dichotomie(char opcode[], int debut,int fin,int n);
 
 /*void inJtoHex(char in[], int hexa);
 void inItoHex(char in[], int hexa);
