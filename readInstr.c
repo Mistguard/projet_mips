@@ -6,8 +6,6 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 
 	char *word;
 	char *prevWord;
-	char *tmpWord;
-	char *tempWord;
 	int wLgth=0;
 	int instrType=0;
 	char line[30];
@@ -30,6 +28,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	/* Lecture dans le fichier */
 	/* On parcourt les lignes du fichier */
 	while(fgets(line, 30, fic1)){
+		hexTrad = 0;
 		rd = 0; rs = 0; rt = 0; imm = 0; offset = 0; target = 0; sa = 0;
 		word = line;
 		prevWord = word;
@@ -38,25 +37,27 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			word++;
 			wLgth++;
 			/*Si on arrive à la fin d'un mot */
-			if(word[0]==' ' || word[0]==','){
-				/* On copie juste le mot */
-
-				tmpWord = prevWord;
-
+			if(word[0]==' ' || word[0]==',' || word[0]=='\n' || word[0]=='#' || word[0]=='\0'){
+				printf("word length = %d\n",wLgth);
 				/*ton strcpy ne tronc pas la chaine donc whatisword ne fonctionne pas et je pense que meme si ca tronque 
 				whatisword ne va pas faire ce qu'on veut*/
-				/*Je pense qu'il faut clear prevWord car il doit garder les autres caractères mêmes si tu troncques*/
+				char* tmpWord = (char *)malloc(wLgth * sizeof(char));
+				for(int j = 0; j < wLgth; j++){
+					tmpWord[j] = prevWord[j];
+				}
+				tmpWord[wLgth]='\0';
 				
-				strncpy(prevWord, tmpWord, wLgth);
-				printf("%s\n",prevWord );
-
+				printf("prevWord = %s\n",prevWord);
+				printf("tmpWord = %s\n",tmpWord);
 				/* Et on regarde ce que c'est */
-				whatIsWord(prevWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
-				printf("oppcode :%s\n",oppcode );
+				whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
+				printf("oppcode :%s\n",oppcode);
+				printf("on a r1 = %d  r2 = %d  r3 = %d  et val = %d\n",r1,r2,r3,value);
 				/* On incrémente "l'index" du mot */
-				/*i++;*/
+				i++;
 				wLgth=0;
-				prevWord=word+1;
+				word++;
+				prevWord=word;
 			}
 		}
 		i=0;
@@ -81,7 +82,10 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
 			break;
 		}
+		printf("On a rs = %d, rt = %d, rd = %d, sa = %d, imm = %d, target = %d\n",rs,rt,rd,sa,imm,target);
+		printf("On a l'hexa qui vaut %X\n",hexTrad);
 		fprintf(fic2, "%X\n",hexTrad);
+		printf("########## NEXT LINE #####\n\n");
 	}
 
 	/* Fermeture du fichier */
@@ -105,20 +109,25 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
    //Baby don't 
    //Hurt me
 	if(i==0){
-		oppcode = mot;
-		printf("%s\n",mot );
+		strcpy(oppcode,mot);
+		printf("on a mot = %s\n",mot);
 	}else{
+		printf("on a mot = %s\n",mot);
 		if(mot[0]=='$'){
+			printf("on va mettre dans r%d <- %s\n",*rNb+1, mot+1);
 			switch(*rNb)
 			{
 				case 0:
 					*r1 = atoi(mot+1);
+					printf("on a r1 = %d\n",*r1);
 					break;
 				case 1:
 					*r2 = atoi(mot+1);
+					printf("on a r2 = %d\n",*r2);
 					break;
 				case 2:
 					*r3 = atoi(mot+1);
+					printf("on a r3 = %d\n",*r3);
 					break;
 				default:
 					break;
@@ -174,6 +183,17 @@ void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd
 	{
 		*rs = r1;
 		*offset = value;
+	}else if(strcmp(oppcode,"ADDI")==0){
+		*rt = r1;
+		*rs = r2;
+		*imm = value;
+	}else if(strcmp(oppcode,"NOP")==0){
+		*rd = 0;
+		*rs = 0;
+		*rt = 0;
+		*sa = 0; 	
+	}else{
+		printf("fonction non trouvé\n");
 	}
 }
 
