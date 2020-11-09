@@ -45,23 +45,22 @@ int opcodeToHexa(char opcode[])
 {
 	int k;
 	/*Je rentre dans dichotomie avec le mot, 
-	la valeur de début ici 26 et de fin ici 0, 
+	la valeur de fin ici 26 et de debut ici 0, 
 	et j'y rentre n qui represente le nombre de tour max nécessaire si on ne trouve pas le mot*/
-	k = dichotomie(opcode,TAILLEMAX,0,4);
-	printf("Pour l'oppcode %s avec k = %d on a hexa= %X\n",opcode,k,T[k].hexa);
+	k = dichotomie(opcode,0,TAILLEMAX-1);
+	printf("Pour l'oppcode %s avec k = %d on a hexa= %X\n",T[k].name,k,T[k].hexa);
 	return T[k].hexa;
 }
 
-int dichotomie(char opcode[], int debut,int fin,int n){
-	if (n!=0){
-		if (strcmp(opcode,T[(debut-fin)/2].name)==0){
-			return(debut-fin)/2;
-		}else if (strcmp(opcode,T[(debut-fin)/2].name)<0){
-			return dichotomie(opcode,(debut-fin)/2,fin,n-1);
-		}else{
-			return dichotomie(opcode,debut,(debut-fin)/2,n-1);
-		}
+int dichotomie(char opcode[],int debut,int fin){
+	int m;
+	m = (fin + debut)/2;
+	if (strcmp(opcode,T[m].name)==0){
+		return m;
+	}else if(strcmp(opcode,T[m].name)>0){
+		return dichotomie(opcode,m+1,fin);
 	}else{
-		return -1;
+		return dichotomie(opcode,debut,m-1);
 	}
 }
+	

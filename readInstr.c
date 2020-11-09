@@ -30,6 +30,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	while(fgets(line, 30, fic1)){
 		hexTrad = 0;
 		rd = 0; rs = 0; rt = 0; imm = 0; offset = 0; target = 0; sa = 0;
+		r1=0;r2=0;r3=0;value=0;
 		word = line;
 		prevWord = word;
 		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
@@ -60,7 +61,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 				prevWord=word;
 			}
 		}
-		i=0;
+		i=0;rNb=0;
 		/* On identifie les termes de l'instruction */
 		identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&offset,&sa,&target);
 		/* On identifie le type d'instruction */
