@@ -7,6 +7,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	char *word;
 	char *prevWord;
 	char *tmpWord;
+	char *tempWord;
 	int wLgth=0;
 	int instrType=0;
 	char line[30];
@@ -39,18 +40,21 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			/*Si on arrive à la fin d'un mot */
 			if(word[0]==' ' || word[0]==','){
 				/* On copie juste le mot */
+
 				tmpWord = prevWord;
 
 				/*ton strcpy ne tronc pas la chaine donc whatisword ne fonctionne pas et je pense que meme si ca tronque 
 				whatisword ne va pas faire ce qu'on veut*/
+				/*Je pense qu'il faut clear prevWord car il doit garder les autres caractères mêmes si tu troncques*/
 				
 				strncpy(prevWord, tmpWord, wLgth);
 				printf("%s\n",prevWord );
+
 				/* Et on regarde ce que c'est */
 				whatIsWord(prevWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
 				printf("oppcode :%s\n",oppcode );
 				/* On incrémente "l'index" du mot */
-				i++;
+				/*i++;*/
 				wLgth=0;
 				prevWord=word+1;
 			}
@@ -102,7 +106,7 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
    //Hurt me
 	if(i==0){
 		oppcode = mot;
-		printf("%c\n",mot[0] );
+		printf("%s\n",mot );
 	}else{
 		if(mot[0]=='$'){
 			switch(*rNb)
