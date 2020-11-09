@@ -8,7 +8,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	char *prevWord;
 	char *tmpWord;
 	int wLgth=0;
-	int instrType;
+	int instrType=0;
 	char line[30];
 
 	char oppcode[10];
@@ -25,7 +25,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		exit(1);
 	}
 
-	fic2 = fopen(nomFichier2, "r+");
+	fic2 = fopen(nomFichier2, "w");
 	/* Lecture dans le fichier */
 	/* On parcourt les lignes du fichier */
 	while(fgets(line, 30, fic1)){
@@ -40,9 +40,15 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			if(word[0]==' ' || word[0]==','){
 				/* On copie juste le mot */
 				tmpWord = prevWord;
+
+				/*ton strcpy ne tronc pas la chaine donc whatisword ne fonctionne pas et je pense que meme si ca tronque 
+				whatisword ne va pas faire ce qu'on veut*/
+				
 				strncpy(prevWord, tmpWord, wLgth);
+				printf("%s\n",prevWord );
 				/* Et on regarde ce que c'est */
 				whatIsWord(prevWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
+				printf("oppcode :%s\n",oppcode );
 				/* On incrémente "l'index" du mot */
 				i++;
 				wLgth=0;
@@ -56,6 +62,8 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		instrType = idInstrType(oppcode);
 		switch(instrType)
 		{
+		case 0:
+			printf("ca fait rien\n");
 		case 1:
 			hexTrad = typeRToHex(oppcode, rs, rt, rd, sa);
 			break;
@@ -66,7 +74,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			hexTrad = typeJToHex(oppcode, target);
 			break;
 		default:
-			printf("Mauvaise écriture de votre code MIPS");
+			printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
 			break;
 		}
 		fprintf(fic2, "%X\n",hexTrad);
@@ -94,6 +102,7 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
    //Hurt me
 	if(i==0){
 		oppcode = mot;
+		printf("%c\n",mot[0] );
 	}else{
 		if(mot[0]=='$'){
 			switch(*rNb)
@@ -110,7 +119,7 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 				default:
 					break;
 			}
-			*rNb++;
+			(*rNb)++;
 		}else{
 				*imm = atoi(mot);
 		}

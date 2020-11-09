@@ -1,3 +1,6 @@
+#ifndef READINSTR_H
+#define READINSTR_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -10,3 +13,5 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* offset, int* sa, int* target);
 
 int idInstrType(char oppcode[]);
+
+#endif

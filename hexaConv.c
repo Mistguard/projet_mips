@@ -1,5 +1,13 @@
 #include "hexaConv.h"
 
+const tradHex T[TAILLEMAX]={
+	{"ADD",0x20},{"ADDI",0x8},{"AND",0X24},{"BEQ",0X4},{"BGTZ",0X7},
+	{"BLEZ",0X6},{"BNE",0X5},{"DIV",0X1A},{"J",0X2},{"JAL",0X3},
+	{"JR",0X8},{"LUI",0XF},{"LW",0X23},{"MFHI",0X10},{"MFLO",0X12},
+	{"MULT",0X18},{"NOP",0X0},{"OR",0X25},{"ROTR",0X2},{"SLL",0X0},
+	{"SLT",0X2A},{"SRL",0X2},{"SUB",0X22},{"SW",0X2B},{"SYSCALL",0XC},
+	{"XOR",0X26}
+};
 
 int typeRToHex(char opcode[], int rs, int rt, int rd, int sa)
 {
