@@ -29,5 +29,11 @@
 #define SYSCALL 0XC
 #define XOR 0X26
 
-void lireEnreDonnees(char nomFichier1[],char nomFichier2[]);
+int typeRToHex(char opcode[], int rs, int rt, int rd, int sa);
+int typeIToHex(char opcode[], int rs, int rt, int imm);
+int typeJToHex(char opcode[], int target);
+int opcodeToHexa(char opcode[]);
 
+/*void inJtoHex(char in[], int hexa);
+void inItoHex(char in[], int hexa);
+void inRtoHex(char in[], int hexa);*/

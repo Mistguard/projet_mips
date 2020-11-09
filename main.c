@@ -1,4 +1,4 @@
-#include "hexaConv.h"
+#include "readInstr.h"
 
 int main(int argc, char *argv[])
 {
