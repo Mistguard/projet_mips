@@ -85,7 +85,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		}
 		printf("On a rs = %d, rt = %d, rd = %d, sa = %d, imm = %d, target = %d\n",rs,rt,rd,sa,imm,target);
 		printf("On a l'hexa qui vaut %X\n",hexTrad);
-		fprintf(fic2, "%X\n",hexTrad);
+		fprintf(fic2, "%08x\n",hexTrad);
 		printf("########## NEXT LINE #####\n\n");
 	}
 
