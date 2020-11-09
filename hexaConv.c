@@ -37,7 +37,9 @@ int typeJToHex(char opcode[], int target)
 int opcodeToHexa(char opcode[])
 {
 	int k;
-	/*Je rentre dans dichotomie avec le mot, la valeur de début ici 26 et de fin ici 0, et j'y rentre n qui represente le nombre de tour max nécessaire si on ne trouve pas le mot*/
+	/*Je rentre dans dichotomie avec le mot, 
+	la valeur de début ici 26 et de fin ici 0, 
+	et j'y rentre n qui represente le nombre de tour max nécessaire si on ne trouve pas le mot*/
 	k = dichotomie(opcode,TAILLEMAX,0,4);
 	return k;
 }
