@@ -15,6 +15,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	int r1, r2, r3, value;
 	int rd, rs, rt, imm, offset, target, sa;
 	int i = 0, rNb = 0;
+
 	/* Ouverture du fichier */
 	fic1 = fopen(nomFichier1, "r");
 	if(fic1 == NULL) {
@@ -108,27 +109,27 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 		oppcode = mot;
 	}else{
 		if(mot[0]=='$'){
-			switch(rNb)
+			switch(*rNb)
 			{
 				case 0:
-					r1 = atoi(mot+1);
+					*r1 = atoi(mot+1);
 					break;
 				case 1:
-					r2 = atoi(mot+1);
+					*r2 = atoi(mot+1);
 					break;
 				case 2:
-					r3 = atoi(mot+1);
+					*r3 = atoi(mot+1);
 					break;
 				default:
 					break;
 			}
-			rNb++;
+			*rNb++;
 		}else{
-				imm = atoi(mot);
+				*imm = atoi(mot);
 		}
 	}
-	if(rNb > 2){
-		rNb = 0;
+	if(*rNb > 2){
+		*rNb = 0;
 	}
 }
 
@@ -164,7 +165,7 @@ void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd
 	}else if (strcmp(oppcode,"J")==0 || strcmp(oppcode,"JAL")==0)
 	{
 		target = value;
-	}else if (strcmp(oppcode,"BEQ")==0 || strcmp(oppcode,"BNE")==0 || )
+	}else if (strcmp(oppcode,"BEQ")==0 || strcmp(oppcode,"BNE")==0 )
 	{
 		rs = r1;
 		rt = r2;
@@ -188,7 +189,7 @@ int idInstrType(char oppcode[])
 	{
 		return 2;
 	}
-	else if ((strcmp(oppcode,"J")==0) || (strcmp(oppcode,"JAL")==0) ||)
+	else if ((strcmp(oppcode,"J")==0) || (strcmp(oppcode,"JAL")==0))
 	{
 		return 3;
 	}else
