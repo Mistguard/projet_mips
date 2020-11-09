@@ -3,6 +3,13 @@
 void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	FILE * fic1;
 	FILE * fic2;
+
+	char *word;
+	char *prevWord;
+	int wLgth=0;
+	int instrType;
+	char line[30];
+
 	char mot[30],temp[30]={0};
 	char oppcode[10];
 	int r1, r2, r3, value;
@@ -15,13 +22,56 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		exit(1);
 	}
 
-	fic2 = fopen(nomFichier2, "r+") ;
+	fic2 = fopen(nomFichier2, "r+");
 	/* Lecture dans le fichier */
-	while(!feof(fic1)) {
+	/* On parcourt les lignes du fichier */
+	while(fgets(line, 30, fic1)){
+
+		word = line;
+		prevWord = word;
+		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
+		while(word[0]!='\n' && word[0]!='#' && word[0]!='\0'){
+			word++;
+			wLgth++;
+			/*Si on arrive à la fin d'un mot */
+			if(word[0]==' ' || word[0]==','){
+				/* On copie juste le mot */
+				strncpy(prevWord, prevWord, wLgth);
+				/* Et on regarde ce que c'est */
+				whatIsWord(prevWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
+				/* On incrémente "l'index" du mot */
+				i++;
+				wLgth=0;
+				prevWord=word+1;
+			}
+		}
+		i=0;
+		/* On identifie les termes de l'instruction */
+		identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&offset,&sa,&target);
+		/* On identifie le type d'instruction */
+		instrType = idInstrType(oppcode);
+		switch(instrType)
+		{
+		case 1:
+			
+			break;
+		case 2:
+
+			break;
+		case 3:
+
+			break;
+		default:
+
+			break;
+		}
+	}
+
+	/*while(!feof(fic1)){
 		fscanf(fic1, "%s", mot);
-		/*On evite la répétion de la dernière ligne*/
+		/*On evite la répétion de la dernière ligne
 		if(strcmp(temp,mot)!=0){
-			/*Pour avoir un affichage et une écriture en ligne et non coupé sur 2 lignes*/
+			/*Pour avoir un affichage et une écriture en ligne et non coupé sur 2 lignes
 			strcpy(temp,mot);
 			if (i%2==0){
 				printf("%s ",mot );
@@ -30,18 +80,27 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 				printf("%s\n",mot);
 				fprintf(fic2, "%s\n", mot) ;
 			}
-			whatIsWord(mot,oppcode,&r1,&r2,&r3,&value,i,&k);
-			i++;
-		}else{
-			i++;
+			whatIsWord(mot,oppcode,&r1,&r2,&r3,&value,i,&rNb);		
 		}
-
-	}
+		i++;
+	}*/
 	/* Fermeture du fichier */
 	fclose(fic1);
 	fclose(fic2);
 }
 
+/*
+	Cette fonction va décomposer l'instruction lu dans le fichier texte pour placer les termes de l'instruction dans des variables
+	Paramètre :
+		- mot : char[]		le mot qui correspond soit à l'opcode soit au reste de la ligne qui sera donc à décomposer
+		- oppcode : char[]	char dans lequel on mettra l'oppcode
+		- r1 : int*			entier dans lequel on mettra le premier registre trouvé
+		- r2 : int*			entier dans lequel on mettra le deuxième registre trouvé
+		- r3 : int*			entier dans lequel on mettra le troisième registre trouvé
+		- imm : int*		entier dans lequel on mettra la valeur immédiate trouvé
+		- i : int			entier indiquant si on est sur l'opcode ou sur le reste de la ligne
+		- rNb : int*		entier indiquant combien de registre on a compté
+*/
 void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm, int i, int *rNb){
    //Baby don't 
    //Hurt me
@@ -73,7 +132,7 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 	}
 }
 
-void identifyRegister(char oppcode[], int* r1, int* r2, int* r3, int* value, int* rd, int* rs, int* rt, int* imm, int* offset, int* sa, int* target)
+void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* offset, int* sa, int* target)
 {
 	if((strcmp(oppcode,"ADD")==0) || strcmp(oppcode,"AND")==0 || strcmp(oppcode,"OR")==0 || strcmp(oppcode,"SLT")==0 || strcmp(oppcode,"SUB")==0 || strcmp(oppcode,"XOR")==0){
 		rd = r1;
@@ -122,7 +181,7 @@ int idInstrType(char oppcode[])
 	if((strcmp(oppcode,"ADD")==0) ||(strcmp(oppcode,"AND")==0) ||(strcmp(oppcode,"DIV")==0) ||(strcmp(oppcode,"MFHI")==0) 
 	||(strcmp(oppcode,"MFLO")==0) ||(strcmp(oppcode,"MULT")==0) ||(strcmp(oppcode,"NOP")==0) ||(strcmp(oppcode,"OR")==0) 
 	||(strcmp(oppcode,"ROTR")==0) ||(strcmp(oppcode,"SLL")==0) ||(strcmp(oppcode,"SLT")==0) ||(strcmp(oppcode,"SRL")==0) 
-	||(strcmp(oppcode,"SUB")==0) ||(strcmp(oppcode,"XOR")==0) ||(strcmp(oppcode,"JR")==0) ||(strcmp(oppcode,"NOP")==0)){
+	||(strcmp(oppcode,"SUB")==0) ||(strcmp(oppcode,"XOR")==0) ||(strcmp(oppcode,"JR")==0)){
 		return 1;
 	}else if ((strcmp(oppcode,"ADDI")==0) ||(strcmp(oppcode,"BEQ")==0) ||(strcmp(oppcode,"BGTZ")==0) ||(strcmp(oppcode,"BLEZ")==0) ||
 	(strcmp(oppcode,"BNE")==0) ||(strcmp(oppcode,"LUI")==0) ||(strcmp(oppcode,"LW")==0) ||(strcmp(oppcode,"SW")==0))
@@ -136,5 +195,4 @@ int idInstrType(char oppcode[])
 	{
 		return -1;
 	}
-		
 }
