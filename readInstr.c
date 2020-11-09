@@ -27,7 +27,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	/* Lecture dans le fichier */
 	/* On parcourt les lignes du fichier */
 	while(fgets(line, 30, fic1)){
-
+		rd = 0; rs = 0; rt = 0 imm = 0; offset = 0; target = 0; sa = 0;
 		word = line;
 		prevWord = word;
 		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
@@ -136,44 +136,44 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* offset, int* sa, int* target)
 {
 	if((strcmp(oppcode,"ADD")==0) || strcmp(oppcode,"AND")==0 || strcmp(oppcode,"OR")==0 || strcmp(oppcode,"SLT")==0 || strcmp(oppcode,"SUB")==0 || strcmp(oppcode,"XOR")==0){
-		rd = r1;
-		rs = r2;
-		rt = r3;
+		*rd = r1;
+		*rs = r2;
+		*rt = r3;
 	}else if (strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0 )
 	{
-		rt = r1;
-		offset = value;
+		*rt = r1;
+		*offset = value;
 	}else if (strcmp(oppcode,"ROTR")==0 || strcmp(oppcode,"SLL")==0 || strcmp(oppcode,"SRL")==0)
 	{
-		rd = r1;
-		rt = r2;
-		sa = value;
+		*rd = r1;
+		*rt = r2;
+		*sa = value;
 	}else if (strcmp(oppcode,"DIV")==0 || strcmp(oppcode,"MUL")==0)
 	{
-		rs = r1;
-		rt = r2;
+		*rs = r1;
+		*rt = r2;
 	}else if (strcmp(oppcode,"MFHI")==0 || strcmp(oppcode,"MFLO")==0)
 	{
-		rd = r1;
+		*rd = r1;
 	}else if (strcmp(oppcode,"LUI")==0)
 	{
-		rt = r1;
-		imm = value;
+		*rt = r1;
+		*imm = value;
 	}else if (strcmp(oppcode,"JR")==0)
 	{
-		rs = r1;
+		*rs = r1;
 	}else if (strcmp(oppcode,"J")==0 || strcmp(oppcode,"JAL")==0)
 	{
-		target = value;
+		*target = value;
 	}else if (strcmp(oppcode,"BEQ")==0 || strcmp(oppcode,"BNE")==0 )
 	{
-		rs = r1;
-		rt = r2;
-		offset = value;
+		*rs = r1;
+		*rt = r2;
+		*offset = value;
 	}else if (strcmp(oppcode,"BGTZ")==0 || strcmp(oppcode,"BLEZ")==0)
 	{
-		rs = r1;
-		offset = value;
+		*rs = r1;
+		*offset = value;
 	}
 }
 
