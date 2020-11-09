@@ -36,12 +36,22 @@ int typeJToHex(char opcode[], int target)
 
 int opcodeToHexa(char opcode[])
 {
-	
-	return 0;
+	int i=0;
+	while (strcmp(opcode,T[i].name)!=0 && i<TAILLEMAX){
+		i++;
+	}
+	if(strcmp(opcode,T[i].name)==0){
+		i=T[i].hexa;
+	}else{
+		i=-1;
+	}
+	return i;
 }
 
+
+
 /*
-void inAtoHex(char inst[], int hexa)
+void inAtoType(char inst[], int hexa)
 {
 	int l = strlen(inst);
 

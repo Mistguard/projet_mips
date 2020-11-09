@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+
+
 void lireEnreDonnees(char nomFichier1[],char nomFichier2[]);
 
 void whatIsWord(char mot[], char oppcode[], char r1[], char r2[], char r3[], int imm, int i, int *k);

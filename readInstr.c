@@ -18,19 +18,14 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	fic2 = fopen(nomFichier2, "r+") ;
 	/* Lecture dans le fichier */
 	while(!feof(fic1)) {
-		fscanf(fic1, "%s", mot);
+		fscanf(fic1, "%[' ']", mot);
 		/*On evite la répétion de la dernière ligne*/
 		if(strcmp(temp,mot)!=0){
 			/*Pour avoir un affichage et une écriture en ligne et non coupé sur 2 lignes*/
 			strcpy(temp,mot);
-			if (i%2==0){
-				printf("%s ",mot );
-				fprintf(fic2, "%s ", mot) ;
-			}else{
-				printf("%s\n",mot);
-				fprintf(fic2, "%s\n", mot) ;
-			}
-			whatIsWord(mot,oppcode,&r1,&r2,&r3,&value,i,&k);
+			printf("%s ",mot );
+			fprintf(fic2, "%s", mot) ;
+			/*whatIsWord(mot,oppcode,&r1,&r2,&r3,&value,i,&k);*/
 			i++;
 		}else{
 			i++;
@@ -42,7 +37,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	fclose(fic2);
 }
 
-void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm, int i, int *rNb){
+/*void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm, int i, int *rNb){
    //Baby don't 
    //Hurt me
 	if(i==0){
@@ -137,4 +132,4 @@ int idInstrType(char oppcode[])
 		return -1;
 	}
 		
-}
+}*/
