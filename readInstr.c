@@ -12,7 +12,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 
 	char oppcode[10];
 	int r1, r2, r3, value;
-	int rd, rs, rt, imm, offset, target, sa;
+	int rd, rs, rt, imm, target, sa;
 	int i = 0, rNb = 0;
 
 	int hexTrad;
@@ -29,7 +29,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	/* On parcourt les lignes du fichier */
 	while(fgets(line, 30, fic1)){
 		hexTrad = 0;
-		rd = 0; rs = 0; rt = 0; imm = 0; offset = 0; target = 0; sa = 0;
+		rd = 0; rs = 0; rt = 0; imm = 0; target = 0; sa = 0;
 		r1=0;r2=0;r3=0;value=0;
 		word = line;
 		prevWord = word;
@@ -63,7 +63,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		}
 		i=0;rNb=0;
 		/* On identifie les termes de l'instruction */
-		identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&offset,&sa,&target);
+		identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&sa,&target);
 		/* On identifie le type d'instruction */
 		instrType = idInstrType(oppcode);
 		switch(instrType)
@@ -143,7 +143,7 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 	}
 }
 
-void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* offset, int* sa, int* target)
+void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* sa, int* target)
 {
 	if((strcmp(oppcode,"ADD")==0) || strcmp(oppcode,"AND")==0 || strcmp(oppcode,"OR")==0 || strcmp(oppcode,"SLT")==0 || strcmp(oppcode,"SUB")==0 || strcmp(oppcode,"XOR")==0){
 		*rd = r1;
@@ -152,7 +152,7 @@ void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd
 	}else if (strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0 )
 	{
 		*rt = r1;
-		*offset = value;
+		*imm = value;
 	}else if (strcmp(oppcode,"ROTR")==0 || strcmp(oppcode,"SLL")==0 || strcmp(oppcode,"SRL")==0)
 	{
 		*rd = r1;
@@ -179,11 +179,11 @@ void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd
 	{
 		*rs = r1;
 		*rt = r2;
-		*offset = value;
+		*imm = value;
 	}else if (strcmp(oppcode,"BGTZ")==0 || strcmp(oppcode,"BLEZ")==0)
 	{
 		*rs = r1;
-		*offset = value;
+		*imm = value;
 	}else if(strcmp(oppcode,"ADDI")==0){
 		*rt = r1;
 		*rs = r2;
