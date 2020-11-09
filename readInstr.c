@@ -6,15 +6,17 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 
 	char *word;
 	char *prevWord;
+	char *tmpWord;
 	int wLgth=0;
 	int instrType;
 	char line[30];
 
-	char mot[30],temp[30]={0};
 	char oppcode[10];
 	int r1, r2, r3, value;
 	int rd, rs, rt, imm, offset, target, sa;
 	int i = 0, rNb = 0;
+
+	int hexTrad;
 
 	/* Ouverture du fichier */
 	fic1 = fopen(nomFichier1, "r");
@@ -27,7 +29,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	/* Lecture dans le fichier */
 	/* On parcourt les lignes du fichier */
 	while(fgets(line, 30, fic1)){
-		rd = 0; rs = 0; rt = 0 imm = 0; offset = 0; target = 0; sa = 0;
+		rd = 0; rs = 0; rt = 0; imm = 0; offset = 0; target = 0; sa = 0;
 		word = line;
 		prevWord = word;
 		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
@@ -37,7 +39,8 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			/*Si on arrive à la fin d'un mot */
 			if(word[0]==' ' || word[0]==','){
 				/* On copie juste le mot */
-				strncpy(prevWord, prevWord, wLgth);
+				tmpWord = prevWord;
+				strncpy(prevWord, tmpWord, wLgth);
 				/* Et on regarde ce que c'est */
 				whatIsWord(prevWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
 				/* On incrémente "l'index" du mot */
@@ -54,37 +57,21 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		switch(instrType)
 		{
 		case 1:
-			
+			hexTrad = typeRToHex(oppcode, rs, rt, rd, sa);
 			break;
 		case 2:
-
+			hexTrad = typeIToHex(oppcode, rs, rt, imm);
 			break;
 		case 3:
-
+			hexTrad = typeJToHex(oppcode, target);
 			break;
 		default:
-
+			printf("Mauvaise écriture de votre code MIPS");
 			break;
 		}
+		fprintf(fic2, "%X\n",hexTrad);
 	}
 
-	/*while(!feof(fic1)){
-		fscanf(fic1, "%s", mot);
-		/*On evite la répétion de la dernière ligne
-		if(strcmp(temp,mot)!=0){
-			/*Pour avoir un affichage et une écriture en ligne et non coupé sur 2 lignes
-			strcpy(temp,mot);
-			if (i%2==0){
-				printf("%s ",mot );
-				fprintf(fic2, "%s ", mot) ;
-			}else{
-				printf("%s\n",mot);
-				fprintf(fic2, "%s\n", mot) ;
-			}
-			whatIsWord(mot,oppcode,&r1,&r2,&r3,&value,i,&rNb);		
-		}
-		i++;
-	}*/
 	/* Fermeture du fichier */
 	fclose(fic1);
 	fclose(fic2);

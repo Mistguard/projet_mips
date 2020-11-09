@@ -37,7 +37,7 @@ typedef struct
 	int hexa;
 }tradHex;
 
-const struct tradHex T[TAILLEMAX]={
+const tradHex T[TAILLEMAX]={
 	{ADD,0x20},{ADDI,0x8},{AND,0X24},{BEQ,0X4},{BGTZ,0X7},
 	{BLEZ,0X6},{BNE,0X5},{DIV,0X1A},{J,0X2},{JAL,0X3},
 	{JR,0X8},{LUI,0XF},{LW,0X23},{MFHI,0X10},{MFLO,0X12},
@@ -51,7 +51,3 @@ int typeIToHex(char opcode[], int rs, int rt, int imm);
 int typeJToHex(char opcode[], int target);
 int opcodeToHexa(char opcode[]);
 int dichotomie(char opcode[], int debut,int fin,int n);
-
-/*void inJtoHex(char in[], int hexa);
-void inItoHex(char in[], int hexa);
-void inRtoHex(char in[], int hexa);*/
