@@ -1,11 +1,11 @@
 #include "hexaConv.h"
 
 const tradHex T[TAILLEMAX]={
-	{"ADD",0x20},{"ADDI",0x8},{"AND",0X24},{"BEQ",0X4},{"BGTZ",0X7},
-	{"BLEZ",0X6},{"BNE",0X5},{"DIV",0X1A},{"J",0X2},{"JAL",0X3},
-	{"JR",0X8},{"LUI",0XF},{"LW",0X23},{"MFHI",0X10},{"MFLO",0X12},
-	{"MULT",0X18},{"NOP",0X0},{"OR",0X25},{"ROTR",0X2},{"SLL",0X0},
-	{"SLT",0X2A},{"SRL",0X2},{"SUB",0X22},{"SW",0X2B},{"SYSCALL",0XC},
+	{"ADD",0x20},{"ADDI",0x08},{"AND",0X24},{"BEQ",0X04},{"BGTZ",0X07},
+	{"BLEZ",0X06},{"BNE",0X05},{"DIV",0X1A},{"J",0X02},{"JAL",0X03},
+	{"JR",0X08},{"LUI",0X0F},{"LW",0X23},{"MFHI",0X10},{"MFLO",0X12},
+	{"MULT",0X18},{"NOP",0X00},{"OR",0X25},{"ROTR",0X02},{"SLL",0X00},
+	{"SLT",0X2A},{"SRL",0X02},{"SUB",0X22},{"SW",0X2B},{"SYSCALL",0X0C},
 	{"XOR",0X26}
 };
 
@@ -48,7 +48,8 @@ int opcodeToHexa(char opcode[])
 	la valeur de début ici 26 et de fin ici 0, 
 	et j'y rentre n qui represente le nombre de tour max nécessaire si on ne trouve pas le mot*/
 	k = dichotomie(opcode,TAILLEMAX,0,4);
-	return k;
+	printf("Pour l'oppcode %s avec k = %d on a hexa= %X\n",opcode,k,T[k].hexa);
+	return T[k].hexa;
 }
 
 int dichotomie(char opcode[], int debut,int fin,int n){

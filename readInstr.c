@@ -52,6 +52,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 				/* Et on regarde ce que c'est */
 				whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
 				printf("oppcode :%s\n",oppcode);
+				printf("on a r1 = %d  r2 = %d  r3 = %d  et val = %d\n",r1,r2,r3,value);
 				/* On incrémente "l'index" du mot */
 				i++;
 				wLgth=0;
@@ -81,7 +82,8 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 			printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
 			break;
 		}
-		printf("On a l'hexa qui vaut %X",hexTrad);
+		printf("On a rs = %d, rt = %d, rd = %d, sa = %d, imm = %d, target = %d\n",rs,rt,rd,sa,imm,target);
+		printf("On a l'hexa qui vaut %X\n",hexTrad);
 		fprintf(fic2, "%X\n",hexTrad);
 		printf("########## NEXT LINE #####\n\n");
 	}
@@ -189,7 +191,9 @@ void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd
 		*rd = 0;
 		*rs = 0;
 		*rt = 0;
-		*sa = 0;
+		*sa = 0; 	
+	}else{
+		printf("fonction non trouvé\n");
 	}
 }
 
