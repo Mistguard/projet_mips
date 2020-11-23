@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int readRegister(int addresse);
-void writeRegistrer(int adresse, int value);
+int readRegister(int T[],int address);
+void writeRegistrer(int T[],int adress, int value);
 
 #endif

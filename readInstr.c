@@ -79,6 +79,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	/* Fermeture des fichiers */
 	fclose(fic1);
 	fclose(fic2);
+	
 }
 
 /*
