@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "hexaConv.h"
+#include "exeInstr.h"
 
 void lireEnreDonnees(char nomFichier1[],char nomFichier2[]);
 void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm, int i, int *rNb);
