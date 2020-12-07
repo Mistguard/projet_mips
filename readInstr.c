@@ -145,45 +145,74 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 */
 void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* sa, int* target)
 {
+	Instrct *nouveau = (Instrct*)malloc(sizeof(Instrct));
+	nouveau->opcode = oppcode;
 	if((strcmp(oppcode,"ADD")==0) || strcmp(oppcode,"AND")==0 || strcmp(oppcode,"OR")==0 || strcmp(oppcode,"SLT")==0 || strcmp(oppcode,"SUB")==0 || strcmp(oppcode,"XOR")==0){
 		*rd = r1;
+		nouveau->rd = r1;
 		*rs = r2;
+		nouveau->rs = r2;
 		*rt = r3;
+		nouveau->rt = r3;
 	}else if (strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0 ){
 		*rt = r1;
+		nouveau->rt = r1;
 		*imm = value;
+		nouveau->im = value;
 	}else if (strcmp(oppcode,"ROTR")==0 || strcmp(oppcode,"SLL")==0 || strcmp(oppcode,"SRL")==0){
 		*rd = r1;
+		nouveau->rd = r1;
 		*rt = r2;
+		nouveau->rt = r2;
 		*sa = value;
+		nouveau->im = value;
 	}else if (strcmp(oppcode,"DIV")==0 || strcmp(oppcode,"MULT")==0){
 		*rs = r1;
+		nouveau->rs = r1;
 		*rt = r2;
+		nouveau->rt = r2;
 	}else if (strcmp(oppcode,"MFHI")==0 || strcmp(oppcode,"MFLO")==0){
 		*rd = r1;
+		nouveau->rd = r1;
 	}else if (strcmp(oppcode,"LUI")==0){
 		*rt = r1;
+		nouveau->rt = r1;
 		*imm = value;
+		nouveau->im = value;
 	}else if (strcmp(oppcode,"JR")==0){
 		*rs = r1;
+		nouveau->rs = r1;
 	}else if (strcmp(oppcode,"J")==0 || strcmp(oppcode,"JAL")==0){
 		*target = value;
+		nouveau->im = value;
 	}else if (strcmp(oppcode,"BEQ")==0 || strcmp(oppcode,"BNE")==0 ){
 		*rs = r1;
+		nouveau->rs = r1;
 		*rt = r2;
+		nouveau->rt = r2;
 		*imm = value;
+		nouveau->im = value;
 	}else if (strcmp(oppcode,"BGTZ")==0 || strcmp(oppcode,"BLEZ")==0){
 		*rs = r1;
+		nouveau->rs = r1;
 		*imm = value;
+		nouveau->im = value;
 	}else if(strcmp(oppcode,"ADDI")==0){
 		*rt = r1;
+		nouveau->rt = r1;
 		*rs = r2;
+		nouveau->rs = r2;
 		*imm = value;
+		nouveau->im = value;
 	}else if(strcmp(oppcode,"NOP")==0){
 		*rd = 0;
+		nouveau->rd = 0;
 		*rs = 0;
+		nouveau->rs = 0;
 		*rt = 0;
+		nouveau->rt = 0;
 		*sa = 0; 	
+		nouveau->im = 0;
 	}else{
 		printf("Fonction non trouvé\n");
 	}

@@ -7,7 +7,7 @@
 
 typedef struct
 {
-    int opcode;
+    char opcode;
     int rd;
     int rs;
     int rt;
