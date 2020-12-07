@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "registerOps.h"
 
 typedef struct
 {
@@ -11,9 +12,9 @@ typedef struct
     int rd;
     int rs;
     int rt;
-    int im; // sa == target == offset
+    int imm; // sa == target == offset
 }Instrct;
 
-void execInstr(Instrct* instr, int[] regs, int[] mem);
+void execInstr(Instrct* instr, GPR* regs, int[] mem);
 
 #endif

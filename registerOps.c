@@ -4,7 +4,7 @@ int readRegister(int T[],int address){
 	return T[address];
 }
 
-void writeRegistrer(int T[], int adress, int value){
+void writeRegistrer(GPR* regs, int value){
 	T[adress] = value;
 }
 
