@@ -51,7 +51,9 @@ typedef union
 }GPR;
 
 
-int readRegister(int T[],int address);
-void writeRegistrer(int T[],int adress, int value);
+int readRegister(GPR* regs, int index);
+void writeRegistrer(GPR* regs, int index, int value);
+void printRegisters(GPR* regs);
+void initialyzeGPR(GPR* regs);
 
 #endif
