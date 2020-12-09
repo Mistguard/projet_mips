@@ -55,11 +55,12 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == JAL)
     {
-        /* code */
+        regs->mReg.ra = regs->mReg.pc + 1;
+        regs->mReg.pc = instr->imm | (regs->mReg.pc & 0xF0000000);
     }
     else if (instr->oppcode == JR)
     {
-        /* code */
+        regs->mReg.pc = regs->tReg[instr->rs];
     }
     else if (instr->oppcode == LUI)
     {
@@ -91,7 +92,16 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == ROTR && instr->rs != 0)
     {
-        /* code */
+        int temp = regs->tReg[instr->rt];
+        int bit = temp & 1;
+        for (int i = 0; i < instr->imm; ++i)
+        {
+            temp = temp >> 1;
+            bit = bit << 31;
+            temp = bit | temp;
+            bit = temp & 1;
+        }
+        regs->tReg[instr->rd] = temp;
     }
     else if (instr->oppcode == SLL) //ou instr->oppcode == NOP
     {
