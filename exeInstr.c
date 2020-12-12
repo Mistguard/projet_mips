@@ -8,7 +8,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
         int32_t res = regs->tReg[instr->rs] + regs->tReg[instr->rt];
         regs->tReg[instr->rd] = res;
     }
-    else if (instr->oppcode == ADDI)
+    else if (instr->oppcode == ADDI && instr->type == 'I')
     {
         int32_t res = regs->tReg[instr->rs] + instr->imm;
         regs->tReg[instr->rt] = res;
@@ -20,25 +20,25 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == BEQ)
     {
-        if(instr->rs == instr->rt){
+        if(regs->tReg[instr->rs] == regs->tReg[instr->rt]){
             regs->mReg.pc = regs->mReg.pc + instr->imm;
         }
     }
     else if (instr->oppcode == BGTZ)
     {
-        if(instr->rs > 0){
+        if(regs->tReg[instr->rs] > 0){
             regs->mReg.pc = regs->mReg.pc + instr->imm;
         }
     }
     else if (instr->oppcode == BLEZ)
     {
-        if(instr->rs <= 0){
+        if(regs->tReg[instr->rs] <= 0){
             regs->mReg.pc = regs->mReg.pc + instr->imm;
         }
     }
     else if (instr->oppcode == BNE)
     {
-        if(instr->rs != instr->rt){
+        if(regs->tReg[instr->rs] != regs->tReg[instr->rt]){
             regs->mReg.pc = regs->mReg.pc + instr->imm;
         }
     }
@@ -53,7 +53,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     {   
         regs->mReg.pc = instr->imm | (regs->mReg.pc & 0xF0000000);
     }
-    else if (instr->oppcode == JAL)
+    else if (instr->oppcode == JAL && instr->type == 'R')
     {
         regs->mReg.ra = regs->mReg.pc + 1;
         regs->mReg.pc = instr->imm | (regs->mReg.pc & 0xF0000000);
@@ -64,7 +64,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == LUI)
     {
-        int32_t shift = regs->tReg[instr->rt];
+        int32_t shift = instr->imm;
         shift = shift << 16;
         regs->tReg[instr->rt] = shift;
     }
@@ -82,7 +82,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == MULT)
     {
-        int64_t res = regs->tReg[instr->rs] * regs->tReg[instr->rt];
+        int64_t res = (int64_t)regs->tReg[instr->rs] * (int64_t)regs->tReg[instr->rt];
         regs->mReg.lo = (int32_t)res;
         regs->mReg.hi = (int32_t)(res >> 32);
     }
@@ -129,7 +129,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == SYSCALL)
     {
-        printf("This is a System Call");
+        printf("This is a System Call\n");
     }
     else if (instr->oppcode == XOR)
     {

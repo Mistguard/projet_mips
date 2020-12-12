@@ -14,7 +14,7 @@ void printRegisters(GPR* regs)
 {
 	for (int i = 0; i < 35; ++i)
 	{
-		printf("Reg %d => %d\n",i,regs->tReg[i]);
+		printf("Reg %d => %u\n",i,regs->tReg[i]);
 	}
 }
 
