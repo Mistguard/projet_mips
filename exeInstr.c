@@ -21,25 +21,25 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     else if (instr->oppcode == BEQ)
     {
         if(regs->tReg[instr->rs] == regs->tReg[instr->rt]){
-            regs->mReg.pc = regs->mReg.pc + instr->imm;
+            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
         }
     }
     else if (instr->oppcode == BGTZ)
     {
         if(regs->tReg[instr->rs] > 0){
-            regs->mReg.pc = regs->mReg.pc + instr->imm;
+            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
         }
     }
     else if (instr->oppcode == BLEZ)
     {
         if(regs->tReg[instr->rs] <= 0){
-            regs->mReg.pc = regs->mReg.pc + instr->imm;
+            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
         }
     }
     else if (instr->oppcode == BNE)
     {
         if(regs->tReg[instr->rs] != regs->tReg[instr->rt]){
-            regs->mReg.pc = regs->mReg.pc + instr->imm;
+            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
         }
     }
     else if (instr->oppcode == DIV)
@@ -51,16 +51,16 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == J && instr->type == 'J')
     {   
-        regs->mReg.pc = instr->imm | (regs->mReg.pc & 0xF0000000);
+        regs->mReg.pc = (instr->imm | (regs->mReg.pc & 0xF0000000))-1;
     }
     else if (instr->oppcode == JAL && instr->type == 'R')
     {
         regs->mReg.ra = regs->mReg.pc + 1;
-        regs->mReg.pc = instr->imm | (regs->mReg.pc & 0xF0000000);
+        regs->mReg.pc = (instr->imm | (regs->mReg.pc & 0xF0000000))-1;
     }
     else if (instr->oppcode == JR)
     {
-        regs->mReg.pc = regs->tReg[instr->rs];
+        regs->mReg.pc = (regs->tReg[instr->rs])-1;
     }
     else if (instr->oppcode == LUI)
     {

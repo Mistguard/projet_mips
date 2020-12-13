@@ -6,7 +6,7 @@
 int main(int argc, char *argv[])
 {
 	/* Initialisation de la mémoire principale */
-	int mem[200];
+	int mem[16] = {0};
 
 	/* Initialisation de la mémoire des instructions */
 	instrList prog;
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 	GPR regs;
 	initialyzeGPR(&regs);
 
-	printf("\t\t\t\t*** MIPS EMMULATOR ***\n\n");
+	printf("\n\t\t\t\t*** MIPS EMMULATOR ***\n\n");
 	printf("CS351 : TOURNABIEN Alan, POLO Etienne\n\n");
 	printf("Assembling file : %s\n", argv[1]);
 	printf("Output will be writtent in hexified/%s\n",argv[2]);
@@ -27,7 +27,33 @@ int main(int argc, char *argv[])
 	/* ici on récupère le nom du fichier a lire lors de l'execution de la commande dans l'invité de commande grace a argv[] */
 	decodeProg(argv[1],argv[2], &prog);
 
-	/* Quelques tests
+	printf("\n\n*** Starting program execution ***\n\n\n");
+
+	while(regs.mReg.pc < prog.size)
+	{
+		printf("Processing instruction:\n%08X\t%s\n\n",prog.list[regs.mReg.pc].hexa, prog.list[regs.mReg.pc].fullInst);
+		execInstr(&prog.list[regs.mReg.pc], &regs, mem);
+		regs.mReg.pc++;
+		if(argc > 3){
+			if(strcmp(argv[3],"-pas") == 0){
+				printRegisters(&regs);
+				printMemory(mem, 16);
+				getchar();
+			}
+		}
+	}
+
+	printf("\n*** Final register states: ***\n\n");
+	printRegisters(&regs);
+	printf("\n*** Final memory state: ***\n\n");
+	printMemory(mem, 16);
+
+	free(prog.list);
+
+	return 0;
+}
+
+/* Quelques tests
 	Instrct inst1;
 	inst1.oppcode = ADDI;
 	inst1.rd = 0;
@@ -56,15 +82,3 @@ int main(int argc, char *argv[])
 	execInstr(&inst1, &regs, mem);
 	execInstr(&inst2, &regs, mem);
 	execInstr(&inst3, &regs, mem);*/
-	for (int i = 0; i < prog.size; ++i)
-	{
-		//printf("rs = %d rd = %d rt = %d oppcode = %d imm = %d type = %c\n",prog.list[i].rs, prog.list[i].rd, prog.list[i].rt, prog.list[i].oppcode, prog.list[i].imm, prog.list[i].type);
-		execInstr(&prog.list[i], &regs, mem);
-	}
-
-	printRegisters(&regs);
-
-	free(prog.list);
-
-	return 0;
-}

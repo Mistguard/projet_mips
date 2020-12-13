@@ -6,7 +6,6 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 
 	char *word;
 	char *prevWord;
-	char *iNeedIt;
 	int wLgth=0;
 	int instrType=0;
 	char line[30];
@@ -33,7 +32,6 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 		hexTrad = 0;
 		rd = 0; rs = 0; rt = 0; imm = 0; target = 0; sa = 0; r1=0; r2=0; r3=0; value=0;
 		word = line;
-		iNeedIt = line;
 		prevWord = word;
 		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
 		while(word[0]!='\n' && word[0]!='#' && word[0]!='\0'){
@@ -54,7 +52,6 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 				wLgth=0;
 				word++;
 				prevWord=word;
-				
 			}
 		}
 		i=0;rNb=0;
@@ -85,7 +82,7 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 		}
 		/* On écrit dans le fichier destination l'héxadécimal de l'instruction */
 		fprintf(fic2, "%08x\n",hexTrad);
-		printInstrLoaded(iNeedIt,hexTrad,pc);
+		printInstrLoaded(line,hexTrad,pc);
 		pc+=4;
 
 		/* On écrit dans notre structure instruction */
@@ -93,20 +90,21 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 		nouv.rs = rs;
 		nouv.rd = rd;
 		nouv.rt = rt;
+		strncpy(nouv.fullInst, line, 30);
+		nouv.hexa = hexTrad;
 
 		prog->list[prog->size] = nouv;
 		prog->size = prog->size + 1;
 		if(prog->size >= prog->capa){
+			printf("size = %d  et capa = %d\n", prog->size, prog->capa);
 			prog->capa = prog->capa + CAPACITY;
 			prog->list = realloc(prog->list,(prog->capa)*sizeof(Instrct));
 		}
-		
 	}
 
 	/* Fermeture des fichiers */
 	fclose(fic1);
 	fclose(fic2);
-	
 }
 
 /*

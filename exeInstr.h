@@ -16,6 +16,8 @@ typedef struct
     int rt;
     int imm; // sa == target == offset
     char type;
+    char fullInst[30];
+    int hexa;
 }Instrct;
 
 void execInstr(Instrct* instr, GPR* regs, int mem[]);

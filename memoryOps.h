@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "exeInstr.h"
 
-#define CAPACITY 10
+#define CAPACITY 100
 
 struct instrList{
 	Instrct* list;
@@ -15,7 +16,6 @@ struct instrList{
 
 typedef struct instrList instrList;
 
-char readMemory(int adresse);
-void writeMemory(int adresse, char block);
+void printMemory(int mem[], int size);
 
 #endif
