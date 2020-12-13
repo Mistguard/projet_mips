@@ -12,7 +12,8 @@ void writeRegister(GPR* regs, int index, int value)
 
 void printRegisters(GPR* regs)
 {
-	for (int i = 0; i < 35; ++i)
+	printf("*** Final register states: ***\n");
+	for (int i = 0; i < 32; ++i)
 	{
 		printf("Reg %d => %u\n",i,regs->tReg[i]);
 	}
