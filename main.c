@@ -14,14 +14,17 @@ int main(int argc, char *argv[])
 	prog.size = 0;
 	prog.capa = CAPACITY;
 
-	printf("%d\n", prog.list==NULL);
-
 	/* Initialisation de la mémoire des registres */
 	GPR regs;
 	initialyzeGPR(&regs);
 
-	/*
-	ici on récupère le nom du fichier a lire lors de l'execution de la commande dans l'invité de commande grace a argv[]*/
+	printf("\t\t\t\t*** MIPS EMMULATOR ***\n\n");
+	printf("CS351 : TOURNABIEN Alan, POLO Etienne\n\n");
+	printf("Assembling file : %s\n", argv[1]);
+	printf("Output will be writtent in hexified/%s\n",argv[2]);
+	printf("\n*** Text segment loaded - Ready to execute *** \n\n");
+
+	/* ici on récupère le nom du fichier a lire lors de l'execution de la commande dans l'invité de commande grace a argv[] */
 	decodeProg(argv[1],argv[2], &prog);
 
 	/* Quelques tests

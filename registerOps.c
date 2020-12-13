@@ -13,18 +13,16 @@ void writeRegister(GPR* regs, int index, int value)
 void printRegisters(GPR* regs)
 {
 	int k =1;
-	printf("*** Final register states: ***\n");
+	printf("\n*** Final register states: ***\n\n");
 	for (int i = 0; i < 32; ++i)
 	{
+		printf("Reg %d\t=>\t%u\t\t", i, regs->tReg[i]);
 		if (k%4==0){
-			printf("Reg %d => %u\n",i,regs->tReg[i]);
-			k++;
-		}else{
-			printf("Reg %d => %u		",i,regs->tReg[i]);
-			k++;
+			printf("\n");
 		}
+		k++;
 	}
-	printf("Reg HI => %u\nReg LO => %u\n",regs->tReg[33],regs->tReg[34]);
+	printf("\nReg HI\t=>\t%u\nReg LO\t=>\t%u\n",regs->tReg[33],regs->tReg[34]);
 }
 
 void initialyzeGPR(GPR* regs)

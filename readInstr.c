@@ -19,8 +19,6 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 
 	int hexTrad;
 	Instrct nouv = {0};
-	/* Print de la présentation*/
-	printPresentation(nomFichier1,nomFichier2);
 
 	/* Ouverture des fichiers */
 	fic1 = fopen(nomFichier1, "r");
@@ -244,19 +242,9 @@ int idInstrType(char oppcode[])
 		return -1;
 	}
 }
-/*
-	Permet de print l'en-tête de notre émulateur
-*/
-void printPresentation(char nameOpenFolder[],char nameOutputFolder[]){	
-	printf("				*** MIPS EMMULATOR ***\n");
-	printf("CS351 : TOURNABIEN Alan, POLO Etienne\n\n\n");
-	printf("Assembling file : %s\n", nameOpenFolder);
-	printf("Output will be writtent in hexified/%s\n\n",nameOutputFolder);
-	printf("*** Text segment loaded - Ready to execute *** \n");
-}
 
 void printInstrLoaded ( char instr[],int hexa,int pc){
-	printf("	%08d	", pc);
-	printf("%08X 	", hexa);
-	printf("%s", instr);
+	printf("\t%08d", pc);
+	printf("\t%08X", hexa);
+	printf("\t%s", instr);
 }
