@@ -96,7 +96,6 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 		prog->list[prog->size] = nouv;
 		prog->size = prog->size + 1;
 		if(prog->size >= prog->capa){
-			printf("size = %d  et capa = %d\n", prog->size, prog->capa);
 			prog->capa = prog->capa + CAPACITY;
 			prog->list = realloc(prog->list,(prog->capa)*sizeof(Instrct));
 		}

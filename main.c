@@ -2,6 +2,7 @@
 #include "registerOps.h"
 #include "exeInstr.h"
 #include "hexaConv.h"
+#include "memoryOps.h"
 
 int main(int argc, char *argv[])
 {

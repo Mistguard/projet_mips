@@ -1,6 +1,5 @@
 #include "exeInstr.h"
 
-
 void execInstr(Instrct* instr, GPR* regs, int mem[])
 {
     if(instr->oppcode == ADD)
@@ -60,7 +59,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == JR)
     {
-        regs->mReg.pc = (regs->tReg[instr->rs])-1;
+        regs->mReg.pc = (regs->tReg[instr->rs]/4)-1;
     }
     else if (instr->oppcode == LUI)
     {
@@ -129,7 +128,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == SYSCALL)
     {
-        printf("This is a System Call\n");
+        printf("This is a System Call Exception\n");
     }
     else if (instr->oppcode == XOR)
     {
