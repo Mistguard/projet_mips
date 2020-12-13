@@ -5,15 +5,26 @@
 
 int main(int argc, char *argv[])
 {
-	/*int memoireRegistre[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	ici on récupère le nom du fichier a lire lors de l'execution de la commande dans l'invité de commande grace a argv[]
-	lireEnreDonnees(argv[1],argv[2]);*/
-
+	/* Initialisation de la mémoire principale */
 	int mem[200];
 
+	/* Initialisation de la mémoire des instructions */
+	instrList prog;
+	prog.list = (Instrct*)malloc(CAPACITY*sizeof(Instrct));
+	prog.size = 0;
+	prog.capa = CAPACITY;
+
+	printf("%d\n", prog.list==NULL);
+
+	/* Initialisation de la mémoire des registres */
 	GPR regs;
 	initialyzeGPR(&regs);
 
+	/*
+	ici on récupère le nom du fichier a lire lors de l'execution de la commande dans l'invité de commande grace a argv[]*/
+	decodeProg(argv[1],argv[2], &prog);
+
+	/* Quelques tests
 	Instrct inst1;
 	inst1.oppcode = ADDI;
 	inst1.rd = 0;
@@ -41,11 +52,16 @@ int main(int argc, char *argv[])
 
 	execInstr(&inst1, &regs, mem);
 	execInstr(&inst2, &regs, mem);
-	execInstr(&inst3, &regs, mem);
-
+	execInstr(&inst3, &regs, mem);*/
+	for (int i = 0; i < prog.size; ++i)
+	{
+		//printf("rs = %d rd = %d rt = %d oppcode = %d imm = %d type = %c\n",prog.list[i].rs, prog.list[i].rd, prog.list[i].rt, prog.list[i].oppcode, prog.list[i].imm, prog.list[i].type);
+		execInstr(&prog.list[i], &regs, mem);
+	}
 
 	printRegisters(&regs);
 
+	free(prog.list);
 
 	return 0;
 }

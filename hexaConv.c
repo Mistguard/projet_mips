@@ -49,7 +49,6 @@ int opcodeToHexa(char opcode[])
 {
 	int k;
 	k = dichotomie(opcode,0,TAILLEMAX-1);
-	printf("Pour l'oppcode %s avec k = %d on a hexa= %X\n",T[k].name,k,T[k].hexa);
 	return T[k].hexa;
 }
 

@@ -1,6 +1,6 @@
 #include "readInstr.h"
 
-void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
+void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 	FILE * fic1;
 	FILE * fic2;
 
@@ -16,7 +16,7 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 	int i = 0, rNb = 0;
 
 	int hexTrad;
-	Instrct nouv;
+	Instrct nouv = {0};
 
 	/* Ouverture des fichiers */
 	fic1 = fopen(nomFichier1, "r");
@@ -81,10 +81,19 @@ void lireEnreDonnees(char nomFichier1[],char nomFichier2[]){
 		}
 		/* On écrit dans le fichier destination l'héxadécimal de l'instruction */
 		fprintf(fic2, "%08x\n",hexTrad);
+		/* On écrit dans notre structure instruction */
 		nouv.oppcode = opcodeToHexa(oppcode);
 		nouv.rs = rs;
 		nouv.rd = rd;
 		nouv.rt = rt;
+
+		prog->list[prog->size] = nouv;
+		prog->size = prog->size + 1;
+		if(prog->size >= prog->capa){
+			prog->capa = prog->capa + CAPACITY;
+			prog->list = realloc(prog->list,(prog->capa)*sizeof(Instrct));
+		}
+		
 	}
 
 	/* Fermeture des fichiers */
