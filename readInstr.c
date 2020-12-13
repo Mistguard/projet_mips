@@ -6,6 +6,7 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 
 	char *word;
 	char *prevWord;
+	char *iNeedIt;
 	int wLgth=0;
 	int instrType=0;
 	char line[30];
@@ -14,9 +15,12 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 	int r1, r2, r3, value;
 	int rd, rs, rt, imm, target, sa;
 	int i = 0, rNb = 0;
+	int pc = 0;
 
 	int hexTrad;
 	Instrct nouv = {0};
+	/* Print de la présentation*/
+	printPresentation(nomFichier1,nomFichier2);
 
 	/* Ouverture des fichiers */
 	fic1 = fopen(nomFichier1, "r");
@@ -31,6 +35,7 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 		hexTrad = 0;
 		rd = 0; rs = 0; rt = 0; imm = 0; target = 0; sa = 0; r1=0; r2=0; r3=0; value=0;
 		word = line;
+		iNeedIt = line;
 		prevWord = word;
 		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
 		while(word[0]!='\n' && word[0]!='#' && word[0]!='\0'){
@@ -51,6 +56,7 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 				wLgth=0;
 				word++;
 				prevWord=word;
+				
 			}
 		}
 		i=0;rNb=0;
@@ -81,6 +87,9 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 		}
 		/* On écrit dans le fichier destination l'héxadécimal de l'instruction */
 		fprintf(fic2, "%08x\n",hexTrad);
+		printInstrLoaded(iNeedIt,hexTrad,pc);
+		pc+=4;
+
 		/* On écrit dans notre structure instruction */
 		nouv.oppcode = opcodeToHexa(oppcode);
 		nouv.rs = rs;
@@ -234,4 +243,20 @@ int idInstrType(char oppcode[])
 	}else{
 		return -1;
 	}
+}
+/*
+	Permet de print l'en-tête de notre émulateur
+*/
+void printPresentation(char nameOpenFolder[],char nameOutputFolder[]){	
+	printf("				*** MIPS EMMULATOR ***\n");
+	printf("CS351 : TOURNABIEN Alan, POLO Etienne\n\n\n");
+	printf("Assembling file : %s\n", nameOpenFolder);
+	printf("Output will be writtent in hexified/%s\n\n",nameOutputFolder);
+	printf("*** Text segment loaded - Ready to execute *** \n");
+}
+
+void printInstrLoaded ( char instr[],int hexa,int pc){
+	printf("	%08d	", pc);
+	printf("%08X 	", hexa);
+	printf("%s", instr);
 }
