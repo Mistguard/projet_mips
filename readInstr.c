@@ -1,44 +1,63 @@
 #include "readInstr.h"
 
-void decodeProg(char nomFichier1[], instrList* prog){
+/*
+	Cette procédure permet de lire une suite d'instruction dans un ficher texte et de sauvegarder leur valeurs hexadecimal dans un autre fichier texte.
+	Les instructions seront décodés et chacune mise dans une structure.
+	Les structures seront ensuite sauvegardés dans la mémoire des instructions pour qu'elles puissent être éxécuté par le programme principale.
+	Paramètre :
+		- nomFic : char[]	le nom du fichier dans lequel on lira les instructions
+		- prog : instrList*	mémoire contenant les structures correspondantes à nos instructions
+*/
+void decodeProg(char nomFic[], instrList* prog){
 	FILE * fic1;
 	FILE * fic2;
 	
 	char line[30];
-
 	int pc = 0;
-
 	Instrct nouv = {0};
 	
-	/* Ouverture des fichiers */
-	fic1 = fopen(nomFichier1, "r");
-		
+	/* Ouverture des fichiers d'entré et de sortie */
+	fic1 = fopen(nomFic, "r");
 	fic2 = fopen("instructions_tests/fichierRes.txt", "w");
 
 	/* On parcourt les lignes du fichier */
 	while(fgets(line, 30, fic1))
 	{
+		/* On décode une ligne dans notre structure */
 		readLine(line, &nouv);
 		/* On écrit dans le fichier destination l'héxadécimal de l'instruction */
 		fprintf(fic2, "%08x\n",nouv.hexa);
+		/* On affiche la ligne du programme avec sa valeur en hexa et le numéro de la ligne */
 		printf("\t%08d", pc);
 		printf("\t%08X", nouv.hexa);
 		printf("\t%s", line);
 		pc+=4;
 		
+		/* On ajoute notre instruction à la mémoire */
 		prog->list[prog->size] = nouv;
 		prog->size = prog->size + 1;
+		/* On aggrandit la capacité de notre mémoire d'instruction si jamais on atteint sa limite */
 		if(prog->size >= prog->capa){
 			prog->capa = prog->capa + CAPACITY;
 			prog->list = realloc(prog->list,(prog->capa)*sizeof(Instrct));
 		}
 	}
 
-	/* Fermeture des fichiers */
+	/* Fermeture des fichiers texte */
 	fclose(fic1);
 	fclose(fic2);
 }
 
+/*
+	Cette procédure permet de décoder l'instruction contenue dans la chaine de caractère line. 
+	Elle va identifier les registres rt, rs et rd, ainsi que les paramètres sa, immediate et l'offset si présents.
+	On identifie aussi le type de l'instruction, si c'est de type R, I ou J.
+	On traduira aussi l'instruction en hexadecimal.
+	Finalement on stockera toutes ces informations dans la structure nouv.
+	Paramètre :
+		- line : char[]		la chaine de caractère correspondant à notre instruction à décoder
+		- nouv : Instrct*	structure d'instruction à remplir après le décodage de line
+*/
 void readLine(char line[30], Instrct* nouv)
 {
 	char oppcode[10];
@@ -60,17 +79,17 @@ void readLine(char line[30], Instrct* nouv)
 	while(word[0]!='\n' && word[0]!='#' && word[0]!='\0'){
 		word++;
 		wLgth++;
-			/*Si on arrive à la fin d'un mot */
+		/*Si on arrive à la fin d'un mot */
 		if(word[0]==' ' || word[0]==',' || word[0]=='\n' || word[0]=='#' || word[0]=='\0'){
-				/* On fait une copie du mot */
+			/* On fait une copie du mot */
 			char* tmpWord = (char *)malloc(wLgth * sizeof(char));
 			for(int j = 0; j < wLgth; j++){
 				tmpWord[j] = prevWord[j];
 			}
 			tmpWord[wLgth]='\0';
-				/* Et on regarde ce que c'est */
+			/* Et on regarde ce que c'est */
 			whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,offBase,i,&rNb);
-				/* On incrémente "l'index" du mot */
+			/* On incrémente "l'index" du mot */
 			i++;
 			wLgth=0;
 			word++;
@@ -79,11 +98,11 @@ void readLine(char line[30], Instrct* nouv)
 		}
 	}
 	i=0;rNb=0;
-		/* On identifie les termes de l'instruction */
+	/* On identifie les termes de l'instruction */
 	identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,offBase,&sa,&target);
-		/* On identifie le type d'instruction */
+	/* On identifie le type d'instruction */
 	instrType = idInstrType(oppcode);
-		/* On traduit l'instruction en héxadécimal */
+	/* On traduit l'instruction en héxadécimal */
 	switch(instrType){
 		case 1:
 		hexTrad = typeRToHex(oppcode, rs, rt, rd, sa);
@@ -104,7 +123,7 @@ void readLine(char line[30], Instrct* nouv)
 		printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
 		break;
 	}
-	/* On écrit dans notre structure instruction */
+	/* On écrit dans notre structure instruction les informations */
 	nouv->oppcode = opcodeToHexa(oppcode);
 	nouv->rs = rs;
 	nouv->rd = rd;
@@ -114,14 +133,15 @@ void readLine(char line[30], Instrct* nouv)
 }
 
 /*
-	Cette fonction va décomposer l'instruction lu dans le fichier texte pour placer les termes de l'instruction dans des variables
+	Cette procédure prend un mot venant d'une instruction et identifie si ça correspond à l'opcode, à un registre, un immediate ou a l'offset avec la base.
 	Paramètre :
 		- mot : char[]		le mot qui correspond soit à l'opcode soit au reste de la ligne qui sera donc à décomposer
-		- oppcode : char[]	char dans lequel on mettra l'oppcode
+		- oppcode : char[]	char dans lequel on mettra l'opcode
 		- r1 : int*			entier dans lequel on mettra le premier registre trouvé
 		- r2 : int*			entier dans lequel on mettra le deuxième registre trouvé
 		- r3 : int*			entier dans lequel on mettra le troisième registre trouvé
 		- imm : int*		entier dans lequel on mettra la valeur immédiate trouvé
+		- offBase : char* 	chaine de caractère dans lequel on mettre l'offset avec la base
 		- i : int			entier indiquant si on est sur l'opcode ou sur le reste de la ligne
 		- rNb : int*		entier indiquant combien de registre on a compté
 */
@@ -163,19 +183,20 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 }
 
 /*
-	Cette fonction va identifier les registres en fonction des instructions ainsi que les valeurs immédiates
+	Cette procédure va identifier les registres rd, rs, rt, les valeurs immédiates ainsi que l'offset et sa base en fonction de l'opcode
 	Paramètre :
-		- oppcode : char[]	char contenant l'oppcode
-		- r1 : int			entier contenant le premier registre trouvé
-		- r2 : int			entier contenant le deuxième registre trouvé
-		- r3 : int			entier contenant le troisième registre trouvé
-		- value : int		entier contenant la valeur immédiate trouvé
-		- rd : int*			entier dans lequel on mettra le registre rd
-		- rs : int*			entier dans lequel on mettra le registre trouvé
-		- rt : int*			entier dans lequel on mettra le registre trouvé
-		- imm : int*		entier dans lequel on mettra la valeur immédiate
-		- sa : int*			entier dans lequel on mettra la valeur sa
-		- target : int*		entier dans lequel on mettra la valeur de target
+		- oppcode 	: char[]	char contenant l'oppcode
+		- r1 		: int		entier contenant le premier registre trouvé
+		- r2 		: int		entier contenant le deuxième registre trouvé
+		- r3 		: int		entier contenant le troisième registre trouvé
+		- value 	: int		entier contenant la valeur immédiate trouvé
+		- rd 		: int*		entier dans lequel on mettra le registre rd
+		- rs 		: int*		entier dans lequel on mettra le registre trouvé
+		- rt 		: int*		entier dans lequel on mettra le registre trouvé
+		- imm 		: int*		entier dans lequel on mettra la valeur immédiate
+		- offBase 	: char*		chaine qui contient l'offset et sa base
+		- sa 		: int*		entier dans lequel on mettra la valeur sa
+		- target 	: int*		entier dans lequel on mettra la valeur de target
 */
 void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, char* offBase, int* sa, int* target)
 {
@@ -255,7 +276,7 @@ void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd
 /*
 	Cette fonction va identifier le type d'instruction compris dans la chaine de caractères oppcode.
 	Paramètre :
-		- oppcode : char[]	char contenant l'oppcode dont on identifiera le type
+		- oppcode : char[]	char contenant l'opcode dont on identifiera le type
 	Retourne un entier :
 		- 1 : si l'instruction est de type R
 		- 2 : si l'instruction est de type I

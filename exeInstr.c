@@ -1,5 +1,14 @@
 #include "exeInstr.h"
 
+/*
+	Cette procédure permet d'executer l'instruction contenu dans la structure instr. 
+	Elle modifiera en conséquence de l'exécution l'état des registres et de la mémoire
+	contenue respectivement dans la structure regs et le tableau mem.
+	Paramètre :
+		- instr : Instrct*		structure de notre instruction à exécuter
+		- regs 	: GPR*			structure Union contenant nos registres
+		- mem	: int[]			tableau d'entier représentant notre mémoire principale
+*/
 void execInstr(Instrct* instr, GPR* regs, int mem[])
 {
     if(instr->oppcode == ADD)

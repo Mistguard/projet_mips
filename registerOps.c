@@ -1,15 +1,10 @@
 #include "registerOps.h"
 
-int readRegister(GPR* regs, int index)
-{
-	return regs->tReg[index];
-}
-
-void writeRegister(GPR* regs, int index, int value)
-{
-	regs->tReg[index] = value;
-}
-
+/*
+	Cette procédure permet d'afficher les valeurs des 32 registres principaux ainsi que des deux registres HIGH et LOW
+	Paramètre :
+		- regs 	: GPR*	structure union contenant nos registres
+*/
 void printRegisters(GPR* regs)
 {
 	int k =1;
@@ -24,6 +19,12 @@ void printRegisters(GPR* regs)
 	printf("\nHI => %u\nLO => %u\n",regs->tReg[33],regs->tReg[34]);
 }
 
+/*
+	Cette procédure permet d'initialiser notre structure contenant nos registres.
+	On initialise tous les contenus à 0
+	Paramètre :
+		- regs 	: GPR*	structure union contenant nos registres
+*/
 void initialyzeGPR(GPR* regs)
 {
 	for (int i = 0; i < 35; ++i)

@@ -50,9 +50,6 @@ typedef union
     regsCst mReg;
 }GPR;
 
-
-int readRegister(GPR* regs, int index);
-void writeRegistrer(GPR* regs, int index, int value);
 void printRegisters(GPR* regs);
 void initialyzeGPR(GPR* regs);
 

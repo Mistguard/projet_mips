@@ -10,6 +10,17 @@ const tradHex T[TAILLEMAX]={
 	{"XOR",0X26}
 };
 
+/*
+	Cette fonction retourne la valeur hexadecimal correspondant à une instruction de type R
+	Là traduction ce fait en fonction de l'opcode, des registres rs, rt, rd et de la valeur de sa
+	Paramètre :
+		- opcode 	: char[]	char contenant l'opcode de l'instruction
+		- rs 		: int 		entier contenant la valeur du registre rs
+		- rt 		: int 		entier contenant la valeur du registre rt
+		- rd 		: int 		entier contenant la valeur du registre rd
+		- sa 		: int 		entier contenant la valeur du immediate sa
+	Retourne un entier correspondant à la valeur hexadecimal de l'instruction de type R
+*/
 int typeRToHex(char opcode[], int rs, int rt, int rd, int sa)
 {
 	int hexOp = opcodeToHexa(opcode);
@@ -25,6 +36,16 @@ int typeRToHex(char opcode[], int rs, int rt, int rd, int sa)
 	return hexInstr;
 }
 
+/*
+	Cette fonction retourne la valeur hexadecimal correspondant à une instruction de type I
+	Là traduction ce fait en fonction de l'opcode, des registres rs, rt et de la valeur de imm
+	Paramètre :
+		- opcode 	: char[]	char contenant l'opcode de l'instruction
+		- rs 		: int 		entier contenant la valeur du registre rs
+		- rt 		: int 		entier contenant la valeur du registre rt
+		- imm 		: int 		entier contenant la valeur du immediate imm
+	Retourne un entier correspondant à la valeur hexadecimal de l'instruction de type I
+*/
 int typeIToHex(char opcode[], int rs, int rt, int imm)
 {
 	int hexOp = opcodeToHexa(opcode);
@@ -36,6 +57,14 @@ int typeIToHex(char opcode[], int rs, int rt, int imm)
 	return hexInstr;
 }
 
+/*
+	Cette fonction retourne la valeur hexadecimal correspondant à une instruction de type J
+	Là traduction ce fait en fonction l'opcode et de la valeur de imm
+	Paramètre :
+		- opcode 	: char[]	char contenant l'opcode de l'instruction
+		- target 	: int 		entier contenant la valeur du immediate target
+	Retourne un entier correspondant à la valeur hexadecimal de l'instruction de type J
+*/
 int typeJToHex(char opcode[], int target)
 {
 	int hexOp = opcodeToHexa(opcode);
@@ -45,6 +74,13 @@ int typeJToHex(char opcode[], int target)
 	return hexInstr;
 }
 
+/*
+	Cette fonction retourne la valeur hexadecimal correspondant à un opcode donné
+	La traduction en hexa de tout les opcode est contenu dans la constante tradHex
+	Paramètre :
+		- opcode 	: char[]	char contenant l'opcode à traduire en hexadecimal
+	Retourne un entier correspondant à la valeur hexadecimal de l'opcode
+*/
 int opcodeToHexa(char opcode[])
 {
 	int k;
@@ -52,6 +88,15 @@ int opcodeToHexa(char opcode[])
 	return T[k].hexa;
 }
 
+/*
+	Cette fonction recursive retourne permet de chercher la valeur hexadecimal de l'opcode dans le tableau tradHex
+	en utilisant la méthode de recherche dichotomique.
+	Paramètre :
+		- opcode 	: char[]	char contenant l'opcode à traduire en hexadecimal
+		- debut		: int 		entier correspondant à l'index de début du tableau
+		- fin 		: int 		entier correspondant à l'index de fin du tableau
+	Retourne un entier correspondant à l'index de l'hexa décimal correspondant à l'opcode
+*/
 int dichotomie(char opcode[],int debut,int fin)
 {
 	int m;
