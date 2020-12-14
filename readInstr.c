@@ -3,118 +3,27 @@
 void decodeProg(char nomFichier1[], instrList* prog){
 	FILE * fic1;
 	FILE * fic2;
-	FILE * mode;
-
-	char *word;
-	char *prevWord;
 	
-
-	int wLgth=0;
-	int instrType=0;
 	char line[30];
 
-	char oppcode[10];
-	int r1, r2, r3, value;
-	int rd, rs, rt, imm, target, sa;
-	int i = 0, rNb = 0;
 	int pc = 0;
 
-	int hexTrad;
 	Instrct nouv = {0};
+	
+	/* Ouverture des fichiers */
+	fic1 = fopen(nomFichier1, "r");
+		
+	fic2 = fopen("instructions_tests/fichierRes.txt", "w");
 
-	if (*nomFichier1 == '\n'){
-		mode = stdin;
-		printf("oui\n");
-	}else{
-		/* Ouverture des fichiers */
-		fic1 = fopen(nomFichier1, "r");
-		mode = fic1;
-		if(fic1 == NULL) {
-			perror("Probleme ouverture fichier instruction_tests/fichierRes.txt");
-			exit(1);
-		}
-		fic2 = fopen("instructions_tests/fichierRes.txt", "w");
-	}
 	/* On parcourt les lignes du fichier */
-	while(fgets(line, 30, mode)){
-		if (mode == stdin && strcmp(line,"exit") ==0){
-			break;
-		}else if (mode == stdin){
-			char *string = line;
-			while (*string!='\0' && *string!='\n' && *string!='\r'){
-				++string;
-			}
-			if (*string!='\n' || *string!='\r'){
-				*string ='\0';
-			}
-			int ch;
-			do ch = getchar();
-			while (ch!= EOF && ch!='\n');
-		}
-		hexTrad = 0;
-		rd = 0; rs = 0; rt = 0; imm = 0; target = 0; sa = 0; r1=0; r2=0; r3=0; value=0;
-		word = line;
-		prevWord = word;
-		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
-		while(word[0]!='\n' && word[0]!='#' && word[0]!='\0'){
-			word++;
-			wLgth++;
-			/*Si on arrive à la fin d'un mot */
-			if(word[0]==' ' || word[0]==',' || word[0]=='\n' || word[0]=='#' || word[0]=='\0'){
-				/* On fait une copie du mot */
-				char* tmpWord = (char *)malloc(wLgth * sizeof(char));
-				for(int j = 0; j < wLgth; j++){
-					tmpWord[j] = prevWord[j];
-				}
-				tmpWord[wLgth]='\0';
-				/* Et on regarde ce que c'est */
-				whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
-				/* On incrémente "l'index" du mot */
-				i++;
-				wLgth=0;
-				word++;
-				prevWord=word;
-			}
-		}
-		i=0;rNb=0;
-		/* On identifie les termes de l'instruction */
-		identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&sa,&target);
-		/* On identifie le type d'instruction */
-		instrType = idInstrType(oppcode);
-		/* On traduit l'instruction en héxadécimal */
-		switch(instrType){
-			case 1:
-				hexTrad = typeRToHex(oppcode, rs, rt, rd, sa);
-				nouv.imm = sa;
-				nouv.type = 'R';
-				break;
-			case 2:
-				hexTrad = typeIToHex(oppcode, rs, rt, imm);
-				nouv.imm = imm;
-				nouv.type = 'I';
-				break;
-			case 3:
-				hexTrad = typeJToHex(oppcode, target);
-				nouv.imm = target;
-				nouv.type = 'J';
-				break;
-			default:
-				printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
-				break;
-		}
+	while(fgets(line, 30, fic1))
+	{
+		readLine(line, &nouv);
 		/* On écrit dans le fichier destination l'héxadécimal de l'instruction */
-		fprintf(fic2, "%08x\n",hexTrad);
-		printInstrLoaded(line,hexTrad,pc);
+		fprintf(fic2, "%08x\n",nouv.hexa);
+		printInstrLoaded(line,nouv.hexa,pc);
 		pc+=4;
-
-		/* On écrit dans notre structure instruction */
-		nouv.oppcode = opcodeToHexa(oppcode);
-		nouv.rs = rs;
-		nouv.rd = rd;
-		nouv.rt = rt;
-		strncpy(nouv.fullInst, line, 30);
-		nouv.hexa = hexTrad;
-
+		
 		prog->list[prog->size] = nouv;
 		prog->size = prog->size + 1;
 		if(prog->size >= prog->capa){
@@ -126,6 +35,75 @@ void decodeProg(char nomFichier1[], instrList* prog){
 	/* Fermeture des fichiers */
 	fclose(fic1);
 	fclose(fic2);
+}
+
+void readLine(char line[30], Instrct* nouv)
+{
+	char oppcode[10];
+	int hexTrad = 0;
+	int wLgth=0;
+	int i = 0, rNb = 0;
+	int instrType=0;
+	int rd = 0, rs = 0, rt = 0, imm = 0, target = 0, sa = 0, r1=0, r2=0, r3=0, value=0;
+	char *word;
+	char *prevWord;
+
+	word = line;
+	prevWord = word;
+	/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
+	while(word[0]!='\n' && word[0]!='#' && word[0]!='\0'){
+		word++;
+		wLgth++;
+			/*Si on arrive à la fin d'un mot */
+		if(word[0]==' ' || word[0]==',' || word[0]=='\n' || word[0]=='#' || word[0]=='\0'){
+				/* On fait une copie du mot */
+			char* tmpWord = (char *)malloc(wLgth * sizeof(char));
+			for(int j = 0; j < wLgth; j++){
+				tmpWord[j] = prevWord[j];
+			}
+			tmpWord[wLgth]='\0';
+				/* Et on regarde ce que c'est */
+			whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
+				/* On incrémente "l'index" du mot */
+			i++;
+			wLgth=0;
+			word++;
+			prevWord=word;
+		}
+	}
+	i=0;rNb=0;
+		/* On identifie les termes de l'instruction */
+	identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&sa,&target);
+		/* On identifie le type d'instruction */
+	instrType = idInstrType(oppcode);
+		/* On traduit l'instruction en héxadécimal */
+	switch(instrType){
+		case 1:
+		hexTrad = typeRToHex(oppcode, rs, rt, rd, sa);
+		nouv->imm = sa;
+		nouv->type = 'R';
+		break;
+		case 2:
+		hexTrad = typeIToHex(oppcode, rs, rt, imm);
+		nouv->imm = imm;
+		nouv->type = 'I';
+		break;
+		case 3:
+		hexTrad = typeJToHex(oppcode, target);
+		nouv->imm = target;
+		nouv->type = 'J';
+		break;
+		default:
+		printf("Mauvaise écriture de votre code MIPS %d \n",instrType);
+		break;
+	}
+	/* On écrit dans notre structure instruction */
+	nouv->oppcode = opcodeToHexa(oppcode);
+	nouv->rs = rs;
+	nouv->rd = rd;
+	nouv->rt = rt;
+	strncpy(nouv->fullInst, line, 30);
+	nouv->hexa = hexTrad;
 }
 
 /*
