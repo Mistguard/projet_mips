@@ -55,16 +55,15 @@ int main(int argc, char *argv[])
 
 		free(prog.list);
 	}else{
-		printf("Coucou interactif\n");
 		char ans[30];
 		Instrct inst = {0};
 		while(strcmp(ans,"exit\n") != 0)
 		{
 			printf("*** Waiting for instruction to execute ***\n");
+			printf("(Be aware that only sequencial instructions are allowed)\n");
 			fgets(ans, 30, stdin);
 			if(strcmp(ans,"exit\n") != 0){
 				readLine(ans, &inst);
-				printf("Hello there\n");
 				execInstr(&inst, &regs, mem);
 				regs.mReg.pc++;
 

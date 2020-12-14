@@ -52,6 +52,7 @@ void readLine(char line[30], Instrct* nouv)
 	int hexTrad = 0;
 	int instrType=0;
 	int rd = 0, rs = 0, rt = 0, imm = 0, target = 0, sa = 0, r1=0, r2=0, r3=0, value=0;
+	char offBase[30] = {0};
 	
 	word = line;
 	prevWord = word;
@@ -68,17 +69,18 @@ void readLine(char line[30], Instrct* nouv)
 			}
 			tmpWord[wLgth]='\0';
 				/* Et on regarde ce que c'est */
-			whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,i,&rNb);
+			whatIsWord(tmpWord,oppcode,&r1,&r2,&r3,&value,offBase,i,&rNb);
 				/* On incrémente "l'index" du mot */
 			i++;
 			wLgth=0;
 			word++;
 			prevWord=word;
+			free(tmpWord);
 		}
 	}
 	i=0;rNb=0;
 		/* On identifie les termes de l'instruction */
-	identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,&sa,&target);
+	identifyRegister(oppcode,r1,r2,r3,value,&rd,&rs,&rt,&imm,offBase,&sa,&target);
 		/* On identifie le type d'instruction */
 	instrType = idInstrType(oppcode);
 		/* On traduit l'instruction en héxadécimal */
@@ -123,7 +125,7 @@ void readLine(char line[30], Instrct* nouv)
 		- i : int			entier indiquant si on est sur l'opcode ou sur le reste de la ligne
 		- rNb : int*		entier indiquant combien de registre on a compté
 */
-void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm, int i, int *rNb){
+void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm, char* offBase, int i, int *rNb){
    //Baby don't 
    //Hurt me
 	if(i==0){
@@ -150,6 +152,9 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 		/* sinon c'est une valeur immédiate */
 		}else{
 				*imm = atoi(mot);
+				if(strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0){
+					strcpy(offBase,mot);
+				}
 		}
 	}
 	if(*rNb > 2){
@@ -172,15 +177,44 @@ void whatIsWord(char mot[], char oppcode[], int* r1, int* r2, int* r3, int* imm,
 		- sa : int*			entier dans lequel on mettra la valeur sa
 		- target : int*		entier dans lequel on mettra la valeur de target
 */
-void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, int* sa, int* target)
+void identifyRegister(char oppcode[], int r1, int r2, int r3, int value, int* rd, int* rs, int* rt, int* imm, char* offBase, int* sa, int* target)
 {
 	if((strcmp(oppcode,"ADD")==0) || strcmp(oppcode,"AND")==0 || strcmp(oppcode,"OR")==0 || strcmp(oppcode,"SLT")==0 || strcmp(oppcode,"SUB")==0 || strcmp(oppcode,"XOR")==0){
 		*rd = r1;
 		*rs = r2;
 		*rt = r3;
-	}else if (strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0 ){
+	}else if (strcmp(oppcode,"LW")==0 || strcmp(oppcode,"SW")==0){
 		*rt = r1;
-		*imm = value;
+		/* On décortique l'offset et la base */
+		char* car = offBase;
+		char* prevCar = car;
+		int wLgth = 0;
+		/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
+		while(car[0]!='\n' && car[0]!='#' && car[0]!='\0'){
+			car++;
+			wLgth++;
+			/* Si on arrive à la fin de l'offset ou à la fin du registre de base */
+			if(car[0]=='(' || car[0]==')'){
+				/* On fait une copie du sous-mot */
+				char* tmpWord = (char *)malloc(wLgth * sizeof(char));
+				for(int j = 0; j < wLgth; j++){
+					tmpWord[j] = prevCar[j];
+				}
+				tmpWord[wLgth]='\0';
+				if(car[0]=='('){
+					/* On enregistre l'offset */
+					*imm = atoi(tmpWord);
+				}
+				if(car[0]==')'){
+					/* On enregistre le registre contenant la base */
+					*rs = atoi(tmpWord);
+				}
+				wLgth=0;
+				car++;
+				prevCar=car+1;
+				free(tmpWord);
+			}
+		}
 	}else if (strcmp(oppcode,"ROTR")==0 || strcmp(oppcode,"SLL")==0 || strcmp(oppcode,"SRL")==0){
 		*rd = r1;
 		*rt = r2;

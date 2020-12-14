@@ -20,25 +20,25 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     else if (instr->oppcode == BEQ)
     {
         if(regs->tReg[instr->rs] == regs->tReg[instr->rt]){
-            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
+            regs->mReg.pc = (regs->mReg.pc + (instr->imm)/4)-1;
         }
     }
     else if (instr->oppcode == BGTZ)
     {
         if(regs->tReg[instr->rs] > 0){
-            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
+            regs->mReg.pc = (regs->mReg.pc + (instr->imm)/4)-1;
         }
     }
     else if (instr->oppcode == BLEZ)
     {
         if(regs->tReg[instr->rs] <= 0){
-            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
+            regs->mReg.pc = (regs->mReg.pc + (instr->imm)/4)-1;
         }
     }
     else if (instr->oppcode == BNE)
     {
         if(regs->tReg[instr->rs] != regs->tReg[instr->rt]){
-            regs->mReg.pc = (regs->mReg.pc + instr->imm)-1;
+            regs->mReg.pc = (regs->mReg.pc + (instr->imm)/4)-1;
         }
     }
     else if (instr->oppcode == DIV)
@@ -69,7 +69,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == LW)
     {
-        regs->tReg[instr->rt] = mem[instr->imm];
+        regs->tReg[instr->rt] = mem[(instr->imm+regs->tReg[instr->rs])/4];
     }
     else if (instr->oppcode == MFHI)
     {
@@ -124,7 +124,8 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == SW)
     {
-        mem[instr->imm] = regs->tReg[instr->rt];
+    	printf("Nous avons imm\n");
+        mem[(instr->imm+regs->tReg[instr->rs])/4] = regs->tReg[instr->rt];
     }
     else if (instr->oppcode == SYSCALL)
     {
