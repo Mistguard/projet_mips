@@ -69,7 +69,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == LW)
     {
-        /* code */
+        regs->tReg[instr->rt] = mem[instr->imm];
     }
     else if (instr->oppcode == MFHI)
     {
@@ -124,7 +124,7 @@ void execInstr(Instrct* instr, GPR* regs, int mem[])
     }
     else if (instr->oppcode == SW)
     {
-        /* code */
+        mem[instr->imm] = regs->tReg[instr->rt];
     }
     else if (instr->oppcode == SYSCALL)
     {

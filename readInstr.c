@@ -21,7 +21,9 @@ void decodeProg(char nomFichier1[], instrList* prog){
 		readLine(line, &nouv);
 		/* On écrit dans le fichier destination l'héxadécimal de l'instruction */
 		fprintf(fic2, "%08x\n",nouv.hexa);
-		printInstrLoaded(line,nouv.hexa,pc);
+		printf("\t%08d", pc);
+		printf("\t%08X", nouv.hexa);
+		printf("\t%s", line);
 		pc+=4;
 		
 		prog->list[prog->size] = nouv;
@@ -40,14 +42,17 @@ void decodeProg(char nomFichier1[], instrList* prog){
 void readLine(char line[30], Instrct* nouv)
 {
 	char oppcode[10];
-	int hexTrad = 0;
-	int wLgth=0;
-	int i = 0, rNb = 0;
-	int instrType=0;
-	int rd = 0, rs = 0, rt = 0, imm = 0, target = 0, sa = 0, r1=0, r2=0, r3=0, value=0;
+
 	char *word;
 	char *prevWord;
+	int wLgth=0;
 
+	int i = 0, rNb = 0;
+
+	int hexTrad = 0;
+	int instrType=0;
+	int rd = 0, rs = 0, rt = 0, imm = 0, target = 0, sa = 0, r1=0, r2=0, r3=0, value=0;
+	
 	word = line;
 	prevWord = word;
 	/* On parcout les caractères de notre ligne tant qu'on n'arrive pas à la fin de la ligne */
@@ -238,10 +243,4 @@ int idInstrType(char oppcode[])
 	}else{
 		return -1;
 	}
-}
-
-void printInstrLoaded ( char instr[],int hexa,int pc){
-	printf("\t%08d", pc);
-	printf("\t%08X", hexa);
-	printf("\t%s", instr);
 }

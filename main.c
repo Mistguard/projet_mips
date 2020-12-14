@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 	GPR regs;
 	initialyzeGPR(&regs);
 
-	printf("\n\t\t\t\t*** MIPS EMMULATOR ***\n\n");
+	printf("\n\t\t\t\t******* MIPS EMMULATOR *******\n\n");
 	printf("CS351 : TOURNABIEN Alan, POLO Etienne\n\n");
 
 	if(argc > 1)
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
 		while(regs.mReg.pc < prog.size)
 		{
-			printf("Processing instruction:\n%08X\t%s\n\n",prog.list[regs.mReg.pc].hexa, prog.list[regs.mReg.pc].fullInst);
+			printf("---> Processing instruction:\n%08X\t%s\n",prog.list[regs.mReg.pc].hexa, prog.list[regs.mReg.pc].fullInst);
 			execInstr(&prog.list[regs.mReg.pc], &regs, mem);
 			regs.mReg.pc++;
 			if(argc > 2){
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		printf("\n*** Final register states: ***\n\n");
+		printf("*** Final register states: ***\n\n");
 		printRegisters(&regs);
 		printf("\n*** Final memory state: ***\n\n");
 		printMemory(mem, 16);

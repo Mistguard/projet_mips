@@ -6,7 +6,7 @@
 #include <string.h>
 #include "exeInstr.h"
 
-#define CAPACITY 100
+#define CAPACITY 16
 
 struct instrList{
 	Instrct* list;
