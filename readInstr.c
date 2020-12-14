@@ -1,11 +1,14 @@
 #include "readInstr.h"
 
-void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
+void decodeProg(char nomFichier1[], instrList* prog){
 	FILE * fic1;
 	FILE * fic2;
+	FILE * mode;
 
 	char *word;
 	char *prevWord;
+	
+
 	int wLgth=0;
 	int instrType=0;
 	char line[30];
@@ -19,16 +22,35 @@ void decodeProg(char nomFichier1[],char nomFichier2[], instrList* prog){
 	int hexTrad;
 	Instrct nouv = {0};
 
-	/* Ouverture des fichiers */
-	fic1 = fopen(nomFichier1, "r");
-	if(fic1 == NULL) {
-		perror("Probleme ouverture fichier monFichier.txt");
-		exit(1);
+	if (*nomFichier1 == '\n'){
+		mode = stdin;
+		printf("oui\n");
+	}else{
+		/* Ouverture des fichiers */
+		fic1 = fopen(nomFichier1, "r");
+		mode = fic1;
+		if(fic1 == NULL) {
+			perror("Probleme ouverture fichier instruction_tests/fichierRes.txt");
+			exit(1);
+		}
+		fic2 = fopen("instructions_tests/fichierRes.txt", "w");
 	}
-	fic2 = fopen(nomFichier2, "w");
-
 	/* On parcourt les lignes du fichier */
-	while(fgets(line, 30, fic1)){
+	while(fgets(line, 30, mode)){
+		if (mode == stdin && strcmp(line,"exit") ==0){
+			break;
+		}else if (mode == stdin){
+			char *string = line;
+			while (*string!='\0' && *string!='\n' && *string!='\r'){
+				++string;
+			}
+			if (*string!='\n' || *string!='\r'){
+				*string ='\0';
+			}
+			int ch;
+			do ch = getchar();
+			while (ch!= EOF && ch!='\n');
+		}
 		hexTrad = 0;
 		rd = 0; rs = 0; rt = 0; imm = 0; target = 0; sa = 0; r1=0; r2=0; r3=0; value=0;
 		word = line;

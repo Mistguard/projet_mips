@@ -22,27 +22,32 @@ int main(int argc, char *argv[])
 	printf("\n\t\t\t\t*** MIPS EMMULATOR ***\n\n");
 	printf("CS351 : TOURNABIEN Alan, POLO Etienne\n\n");
 	printf("Assembling file : %s\n", argv[1]);
-	printf("Output will be writtent in hexified/%s\n",argv[2]);
+	printf("Output will be writtent in instruction_tests/fichierRes.txt\n");
 	printf("\n*** Text segment loaded - Ready to execute *** \n\n");
 
+	if (argv[1] == NULL){
+		decodeProg("\n", &prog);
+	}else{
 	/* ici on récupère le nom du fichier a lire lors de l'execution de la commande dans l'invité de commande grace a argv[] */
-	decodeProg(argv[1],argv[2], &prog);
+		decodeProg(argv[1], &prog);
+		printf("\n\n*** Starting program execution ***\n\n\n");
 
-	printf("\n\n*** Starting program execution ***\n\n\n");
-
-	while(regs.mReg.pc < prog.size)
-	{
-		printf("Processing instruction:\n%08X\t%s\n\n",prog.list[regs.mReg.pc].hexa, prog.list[regs.mReg.pc].fullInst);
-		execInstr(&prog.list[regs.mReg.pc], &regs, mem);
-		regs.mReg.pc++;
-		if(argc > 3){
-			if(strcmp(argv[3],"-pas") == 0){
-				printRegisters(&regs);
-				printMemory(mem, 16);
-				getchar();
+		while(regs.mReg.pc < prog.size)
+		{
+			printf("Processing instruction:\n%08X\t%s\n\n",prog.list[regs.mReg.pc].hexa, prog.list[regs.mReg.pc].fullInst);
+			execInstr(&prog.list[regs.mReg.pc], &regs, mem);
+			regs.mReg.pc++;
+			if(argc > 2){
+				if(strcmp(argv[2],"-pas") == 0){
+					printRegisters(&regs);
+					printMemory(mem, 16);
+					getchar();
+				}
 			}
 		}
 	}
+
+	
 
 	printf("\n*** Final register states: ***\n\n");
 	printRegisters(&regs);
